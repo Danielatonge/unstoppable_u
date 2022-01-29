@@ -34,10 +34,11 @@
     ],
     "baseUrl": ".",
   },
+  "include": ["src/declarations.d.ts"],
   "exclude": [
     "node_modules",
     "babel.config.js",
-    "metro.config.js",
+    // "metro.config.js",
     "react-native.config.js"
   ]
 }
