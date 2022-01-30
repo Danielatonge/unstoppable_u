@@ -38,3 +38,5 @@ export { default as Logo } from "./logo.svg";
 export { default as Flag } from "./flag.svg";
 export { default as Dot } from "./dot.svg";
 export { default as Bookmarkplus } from "./bookmarkplus.svg";
+export { default as Link } from "./link.svg";
+export { default as Calendar } from "./calendar.svg";

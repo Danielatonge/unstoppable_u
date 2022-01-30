@@ -19,7 +19,6 @@ const MessengerNav = createNativeStackNavigator();
 // const LoginNav = createNativeStackNavigator();
 
 const HomeStack = () => {
-  const { colors } = useTheme();
 
   return (
     <HomeNav.Navigator initialRouteName="UserProfile">

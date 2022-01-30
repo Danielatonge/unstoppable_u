@@ -11,7 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getColorScheme } from "../helpers";
 import { Icon } from "./Icon";
-import { PROFILE_HEADER_HEIGHT } from "../constants";
+import { PROFILE_BANNER_URL, PROFILE_HEADER_HEIGHT } from "../constants";
 
 const Container = styled(ImageBackground)<{
   insetTop: number;
@@ -25,7 +25,7 @@ const Container = styled(ImageBackground)<{
   padding-top: ${({ insetTop }) => insetTop}px;
   padding-bottom: 20px;
   background-color: ${({ bgColor }) => (bgColor ? "transparent" : "#2f2f2f")};
-  z-index: 2;
+  z-index: 0;
   border-bottom-width: 1px;
   border-color: #ccc;
 `;
@@ -36,7 +36,7 @@ const BackButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   background-color: #000;
-  border-radius: 50;
+  border-radius: 50px;
   position: absolute;
   left: 10px;
   top: 65px;
@@ -62,7 +62,7 @@ interface Props {
 
 export const ProfileHeader = ({
   profileMotivation,
-  backgroundImageUri = "",
+  backgroundImageUri = PROFILE_BANNER_URL,
   backAction,
 }: Props) => {
   const scheme = useColorScheme();

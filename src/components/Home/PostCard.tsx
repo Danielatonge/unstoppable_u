@@ -34,6 +34,7 @@ const ActionContainer = styled.View`
   justify-content: space-between;
 `;
 const DescriptionText = styled.Text`
+  color: ${({ theme }) => theme.text};
   line-height: 18px;
 `;
 
@@ -43,21 +44,22 @@ const IconContainer = styled.TouchableOpacity`
 `;
 
 const IconLabel = styled.Text`
+  color: ${({ theme }) => theme.text};
   align-self: center;
   margin-left: 4px;
 `;
 
 const UserText = styled.Text`
+  color: ${({ theme }) => theme.text};
   margin-right: 5px;
   font-weight: 800;
 `;
 
 const HandleText = styled.Text`
-  color: ${({ theme }) => "#444" || theme.text};
+  color: ${({ theme }) => theme.text};
 `;
-
 const TimeText = styled.Text`
-  color: ${({ theme }) => "#444" || theme.text};
+  color: ${({ theme }) => theme.text};
 `;
 
 const HeaderRow = styled.View`
@@ -117,11 +119,11 @@ export const PostCard = ({
               <UserText>{userName}</UserText>
               <HandleText>@{userHandle}</HandleText>
               <Icon name="Dot" size={18} color="grey" />
-              <Text>{moment(timestamp).fromNow()}</Text>
+              <TimeText>{moment(timestamp).fromNow()}</TimeText>
             </TouchableOpacity>
           </HeaderInfo>
           <TouchableOpacity>
-            <Icon name="Dots" color="black"></Icon>
+            <Icon name="Dots" color={colors.text}></Icon>
           </TouchableOpacity>
         </HeaderRow>
         <ContentContainer>
@@ -130,16 +132,16 @@ export const PostCard = ({
         <ActionContainer>
           <View style={{ flexDirection: "row" }}>
             <IconContainer>
-              <Icon name="Heart" size={24} color="black" />
+              <Icon name="Heart" size={24} color={colors.text} />
               <IconLabel>{likeCount}</IconLabel>
             </IconContainer>
             <IconContainer>
-              <Icon name="Bubble" size={24} color="black" />
+              <Icon name="Bubble" size={24} color={colors.text} />
               <IconLabel>{comments ? comments.length : 4}</IconLabel>
             </IconContainer>
           </View>
           <TouchableOpacity>
-            <Icon name="Bookmarkplus" size={24} color="black" />
+            <Icon name="Bookmarkplus" size={24} color={colors.text} />
           </TouchableOpacity>
         </ActionContainer>
       </RightContainer>
