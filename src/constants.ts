@@ -22,3 +22,9 @@ export interface User {
   name: string;
   imageUri: string;
 }
+
+export const MENTOR_BG = [
+  "https://cdn.discordapp.com/attachments/934291385157296148/937446216407605349/bgm1.png",
+  "https://cdn.discordapp.com/attachments/934291385157296148/937446216155934740/bgm2.png",
+  "https://cdn.discordapp.com/attachments/934291385157296148/937469509223198760/bgm3.png",
+];

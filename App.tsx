@@ -21,7 +21,7 @@ export default function App() {
         <SafeAreaProvider>
           <NavigationContainer>
             <StatusBar barStyle={statusBarStyle} />
-            <RootStack.Navigator initialRouteName="Home">
+            <RootStack.Navigator>
               <RootStack.Screen
                 name="Main"
                 component={TabsStack}

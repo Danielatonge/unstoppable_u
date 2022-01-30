@@ -1,5 +1,11 @@
-import { View, Text, useColorScheme, TouchableOpacity } from "react-native";
-import React, { ReactNode } from "react";
+import {
+  View,
+  Text,
+  useColorScheme,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
+import React, { ReactNode, useState } from "react";
 import styled from "styled-components";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -20,8 +26,8 @@ const Container = styled.View<{ insetTop: number }>`
   border-color: #ccc;
 `;
 
-const SectionContainer = styled.View`
-  width: 33%;
+const SectionContainer = styled.View<{ index: number }>`
+  width: ${({ index }) => (index !== 2 ? "10%" : "70%")};
 `;
 
 const Title = styled.Text`
@@ -41,6 +47,7 @@ const EmptyContainer = styled.View`
 `;
 interface Props {
   logo?: boolean;
+  search?: boolean;
   title: string;
   leftComponent?: ReactNode;
   rightComponent?: ReactNode;
@@ -49,9 +56,17 @@ interface Props {
   close?: boolean;
   backAction?(): void;
 }
-
+const SearchInput = styled.TextInput`
+  border-radius: 50px;
+  height: 32px;
+  padding: 0px 40px;
+  font-size: 16px;
+  width: 90%;
+  background-color: #eee
+`;
 export const MainHeader = ({
   logo,
+  search,
   title,
   leftComponent,
   rightComponent,
@@ -81,8 +96,7 @@ export const MainHeader = ({
         <BackText>{back ? "Back" : ""}</BackText>
       </TouchableOpacity>
     ) : (
-      <EmptyContainer>
-      </EmptyContainer>
+      <EmptyContainer></EmptyContainer>
     );
 
   const NoRightComponent = action ? (
@@ -93,15 +107,33 @@ export const MainHeader = ({
     <EmptyContainer></EmptyContainer>
   );
 
+  const [text, onChangeText] = useState(null);
+
+  const CenterComponent = () => {
+    if (logo) {
+      return <Icon name="Logo" size={32} />;
+    }
+    if (search) {
+      return (
+        <SearchInput
+          onChangeText={onChangeText}
+          value={text}
+          placeholder="Search Our Universe"
+        />
+      );
+    }
+    return <Title>{title}</Title>;
+  };
+
   return (
     <Container insetTop={insets.top}>
-      <SectionContainer>
+      <SectionContainer index={1}>
         {leftComponent ? leftComponent : NoLeftComponent}
       </SectionContainer>
-      <SectionContainer style={{ alignItems: "center" }}>
-        {logo ? <Icon name="Logo" size={32} /> : <Title>{title}</Title>}
+      <SectionContainer index={2} style={{ alignItems: "center" }}>
+        {CenterComponent()}
       </SectionContainer>
-      <SectionContainer style={{ alignItems: "flex-end" }}>
+      <SectionContainer index={3} style={{ alignItems: "flex-end" }}>
         {rightComponent ? rightComponent : NoRightComponent}
       </SectionContainer>
     </Container>

@@ -129,8 +129,8 @@ export const UserProfile = () => {
             <ConnectText>217 Following 118 Followers</ConnectText>
           </Statistics>
         </SectionBio>
-        <UserTabView />
       </Container>
+      <UserTabView />
     </>
   );
 };

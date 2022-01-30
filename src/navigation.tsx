@@ -19,9 +19,8 @@ const MessengerNav = createNativeStackNavigator();
 // const LoginNav = createNativeStackNavigator();
 
 const HomeStack = () => {
-
   return (
-    <HomeNav.Navigator initialRouteName="UserProfile">
+    <HomeNav.Navigator>
       <HomeNav.Screen
         name="Feed"
         options={{ headerShown: false }}
@@ -71,14 +70,12 @@ export const SearchStack = () => {
         component={SearchProfile}
         options={{ headerShown: false }}
       />
-      {/* <SearchNav.Screen
-        name="Profile"
-        component={Profile}
-        options={({ route }) => ({
-          headerTitle: `${route.params.displayName || "User"}`,
-        })}
+      <SearchNav.Screen
+        name="UserProfile"
+        component={UserProfile}
+        options={{ headerShown: false }}
       />
-      <SearchNav.Screen name="Settings" component={Settings} />
+      {/*  <SearchNav.Screen name="Settings" component={Settings} />
       <SearchNav.Screen name="About" component={About} />
       <SearchNav.Group screenOptions={{ presentation: "modal" }}>
         <SearchNav.Screen
@@ -181,13 +178,20 @@ export const MessengerStack = () => {
 // );
 
 export const TabsStack = () => (
-  <Tab.Navigator tabBar={(props) => <Tabbar {...props} />}>
+  <Tab.Navigator
+    initialRouteName="Search"
+    tabBar={(props) => <Tabbar {...props} />}
+  >
     <Tab.Screen
       name="Home"
       component={HomeStack}
       options={{ headerShown: false }}
     />
-    <Tab.Screen name="Search" component={SearchStack} />
+    <Tab.Screen
+      name="Search"
+      component={SearchStack}
+      options={{ headerShown: false }}
+    />
     <Tab.Screen name="Notification" component={NotificationStack} />
     <Tab.Screen name="Messenger" component={MessengerStack} />
   </Tab.Navigator>

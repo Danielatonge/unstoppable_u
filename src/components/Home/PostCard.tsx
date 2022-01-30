@@ -13,17 +13,18 @@ import { Avatar } from "../Avatar";
 import { Icon } from "../Icon";
 import moment from "moment";
 
-const PostContainer = styled.Pressable`
+const PostContainer = styled.Pressable<{ profile: boolean }>`
   padding: ${SCREEN_PADDING}px;
   background: ${({ theme }) => theme.secondary};
   flex-direction: row;
   width: 100%;
-  border-bottom-width: 1px;
+  border-bottom-width: ${({ profile }) => (profile ? 0 : 1)}px;
   border-color: #ccc;
 `;
 const RightContainer = styled.View`
   flex: 1;
   padding-left: 10px;
+  position: relative;
 `;
 
 const ContentContainer = styled.View`
@@ -72,6 +73,15 @@ const HeaderInfo = styled.Pressable`
   justify-content: space-between;
 `;
 
+const PathFill = styled.View`
+  position: absolute;
+  height: 100%;
+  background-color: grey;
+  width: 1px;
+  left: -30px;
+  top: 70px;
+`;
+
 interface PostProps {
   id: string;
   avatar: string;
@@ -81,6 +91,8 @@ interface PostProps {
   likeCount: number;
   comments: string[];
   timestamp: string;
+  profile?: boolean;
+  bookmark?: boolean;
 }
 
 export const PostCard = ({
@@ -92,6 +104,8 @@ export const PostCard = ({
   likeCount = 0,
   comments,
   timestamp,
+  profile,
+  bookmark,
 }: PostProps) => {
   const scheme = useColorScheme();
   const { theme } = getColorScheme("AUTOMATIC", scheme);
@@ -104,13 +118,14 @@ export const PostCard = ({
   const localLikesCount = likeCount + (localLiked ? 1 : 0);
 
   return (
-    <PostContainer>
+    <PostContainer profile={profile}>
       <View>
         <TouchableOpacity>
           <Avatar imageUri={avatar} size={60}></Avatar>
         </TouchableOpacity>
       </View>
       <RightContainer>
+        {profile ? <PathFill></PathFill> : <View></View>}
         <HeaderRow>
           <HeaderInfo>
             <TouchableOpacity
@@ -140,9 +155,13 @@ export const PostCard = ({
               <IconLabel>{comments ? comments.length : 4}</IconLabel>
             </IconContainer>
           </View>
-          <TouchableOpacity>
-            <Icon name="Bookmarkplus" size={24} color={colors.text} />
-          </TouchableOpacity>
+          {bookmark ? (
+            <View></View>
+          ) : (
+            <TouchableOpacity>
+              <Icon name="Bookmarkplus" size={24} color={colors.text} />
+            </TouchableOpacity>
+          )}
         </ActionContainer>
       </RightContainer>
     </PostContainer>

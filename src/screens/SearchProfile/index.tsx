@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
-import { POSTS, USER } from "../../mock";
+import { MENTORS, POSTS, USER } from "../../mock";
 import { Avatar } from "../../components/Avatar";
 import { MainHeader } from "../../components/MainHeader";
 import { Icon } from "../../components/Icon";
@@ -16,8 +16,9 @@ import { getColorScheme } from "../../helpers";
 import { PostCard } from "../../components/Home/PostCard";
 import { useNavigation } from "@react-navigation/native";
 import { PostItem } from "../../components/Home/PostItem";
+import { MentorCard } from "../../components/MentorCard";
 
-export const Home = () => {
+export const SearchProfile = () => {
   const scheme = useColorScheme();
   const { theme } = getColorScheme("AUTOMATIC", scheme);
   const colors = theme.colors;
@@ -57,18 +58,33 @@ export const Home = () => {
     </Pressable>
   );
 
+  const MentorItem = ({ user }) => {
+    return (
+      <MentorCard
+        id={user.id}
+        avatar={user.imageUri}
+        userName={user.name}
+        userHandle={user.username}
+        achievement={user.achievement}
+        likeCount={user.likeCount}
+        followCount={user.followCount}
+        tags={user.tags}
+      ></MentorCard>
+    );
+  };
+
   return (
     <>
       <MainHeader
         title="Home"
-        logo
+        search
         leftComponent={UserAvatar}
         rightComponent={Settings}
       ></MainHeader>
 
       <FlatList
-        data={POSTS}
-        renderItem={({ item }) => <PostItem item={item} profile={false} />}
+        data={MENTORS}
+        renderItem={({ item }) => <MentorItem user={item} />}
         keyExtractor={(item) => item.id}
         refreshing={loading}
         onRefresh={fetchPosts}

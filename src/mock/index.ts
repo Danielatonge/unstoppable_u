@@ -79,4 +79,40 @@ export const USER = {
   username: "johnpaul",
   name: "John Paul",
   imageUri: "https://robohash.org/johnpaul?bgset=bg2",
+  achievement: "Founder of Apple",
+  likeCount: 20000000,
+  followCount: 7000000,
 };
+
+export const MENTORS = [
+  {
+    id: "u1",
+    username: "stevejobs",
+    name: "Steve Jobs",
+    imageUri: "https://robohash.org/stevejobs?bgset=bg2",
+    achievement: "Founder of Apple",
+    likeCount: 20000000,
+    followCount: 7000000,
+    tags: " #innovation #simplicity #entrepreneur #apple #founder",
+  },
+  {
+    id: "u2",
+    username: "billgates",
+    name: "Bill Gates",
+    imageUri: "https://robohash.org/billgates?bgset=bg2",
+    achievement: "Founder of Microsoft",
+    likeCount: 91000000,
+    followCount: 359000000,
+    tags: "#healthcare #innovation #entrepreneur #sustainability",
+  },
+  {
+    id: "u3",
+    username: "elonmusk",
+    name: "Elon Musk",
+    imageUri: "https://robohash.org/elonmusk?bgset=bg2",
+    achievement: "Founder - Tesla",
+    likeCount: 345000000,
+    followCount: 7349000000,
+    tags: "#founder #entrepreneur #tesla #spaceX #mars ",
+  },
+];

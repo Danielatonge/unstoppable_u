@@ -40,3 +40,4 @@ export { default as Dot } from "./dot.svg";
 export { default as Bookmarkplus } from "./bookmarkplus.svg";
 export { default as Link } from "./link.svg";
 export { default as Calendar } from "./calendar.svg";
+export { default as Follow } from "./follow.svg";

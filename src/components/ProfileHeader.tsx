@@ -4,6 +4,7 @@ import {
   useColorScheme,
   TouchableOpacity,
   ImageBackground,
+  Platform,
 } from "react-native";
 import React, { ReactNode } from "react";
 import styled from "styled-components";
@@ -32,16 +33,16 @@ const Container = styled(ImageBackground)<{
 
 const SectionContainer = styled.View``;
 
-const BackButton = styled.TouchableOpacity`
+const BackButton = styled.TouchableOpacity<{ isAndroid: boolean }>`
   flex-direction: row;
   align-items: center;
   background-color: #000;
   border-radius: 50px;
   position: absolute;
   left: 10px;
-  top: 65px;
+  top: ${({ isAndroid }) => (isAndroid ? 25 : 65)}px;
 `;
-
+//65px
 const Title = styled.Text`
   font-weight: 600;
   font-size: 20px;
@@ -72,6 +73,8 @@ export const ProfileHeader = ({
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
+  const isAndroid = Platform.OS === "android";
+
   return (
     <Container
       source={{ uri: backgroundImageUri }}
@@ -81,8 +84,9 @@ export const ProfileHeader = ({
       bgColor={backgroundImageUri}
     >
       <BackButton
+        isAndroid={isAndroid}
         onPress={() => {
-          navigation.navigate("Feed");
+          navigation.goBack();
         }}
         style={{ flexDirection: "row", alignItems: "center" }}
       >
