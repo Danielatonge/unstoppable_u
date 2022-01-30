@@ -183,8 +183,8 @@ export const MessengerStack = () => {
 // );
 
 export const TabsStack = () => (
-  <Tab.Navigator tabBar={(props) => Tabbar(props)}>
-    <Tab.Screen name="Home" component={HomeStack} />
+  <Tab.Navigator tabBar={(props) => <Tabbar {...props} />}>
+    <Tab.Screen name="Home" component={HomeStack} options={{headerShown: false}}/>
     <Tab.Screen name="Search" component={SearchStack} />
     <Tab.Screen name="Notification" component={NotificationStack} />
     <Tab.Screen name="Messenger" component={MessengerStack} />

@@ -31,7 +31,7 @@ const TabIndicatorWrapper = styled(Animated.View)<{ insetBottom: number }>`
 const TabIndicator = styled.View`
   height: 4px;
   width: 4px;
-  background: ${({ theme }) => theme.accent };
+  background: ${({ theme }) => theme.accent};
 `;
 
 interface Props {
@@ -62,7 +62,7 @@ const TabbarComponent = ({ props }: Props) => {
     }).start();
   }, [props.state.index]);
 
-  console.log(colors);
+  // console.log(colors);
   return (
     <View style={{ backgroundColor: colors.secondary }}>
       <Wrapper insetBottom={insets.bottom}>
@@ -98,6 +98,6 @@ const TabbarComponent = ({ props }: Props) => {
   );
 };
 
-export const Tabbar: React.FC = (routeProps) => (
+export const Tabbar: React.FC<BottomTabBarProps> = (routeProps) => (
   <TabbarComponent props={routeProps} />
 );
