@@ -23,19 +23,13 @@ const AvatarImage = styled.Image`
 `;
 
 export interface AvatarProps {
-  user: User;
+  imageUri: string;
   size?: number;
   withBorder?: boolean;
 }
-const initUser = {
-  id: "user",
-  username: "Unknown",
-  name: "unknown",
-  imageUri: "https://robohash.org/unknown?bgSet=bg2",
-};
 
 export const Avatar = ({
-  user = initUser,
+  imageUri = "https://robohash.org/unknown?bgSet=bg2",
   size = 32,
   withBorder = false,
 }: AvatarProps) => {
@@ -43,7 +37,7 @@ export const Avatar = ({
 
   return (
     <Container size={size} border={withBorder}>
-      <AvatarImage source={{ uri: user.imageUri }}></AvatarImage>
+      <AvatarImage source={{ uri: imageUri }}></AvatarImage>
     </Container>
   );
 };

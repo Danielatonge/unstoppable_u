@@ -8,6 +8,7 @@ import { Home } from "./screens/Home";
 import { Messenger } from "./screens/Messenger";
 import { SearchProfile } from "./screens/SearchProfile";
 import { Notification } from "./screens/Notification";
+import { UserProfile } from "./screens/UserProfile";
 
 export const RootStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -21,7 +22,7 @@ const HomeStack = () => {
   const { colors } = useTheme();
 
   return (
-    <HomeNav.Navigator>
+    <HomeNav.Navigator initialRouteName="UserProfile">
       <HomeNav.Screen
         name="Feed"
         options={{ headerShown: false }}
@@ -37,15 +38,13 @@ const HomeStack = () => {
             </TouchableOpacity>
           ),
         })}
-      />
+      /> */}
       <HomeNav.Screen
         name="UserProfile"
         component={UserProfile}
-        options={({ route }) => ({
-          headerTitle: `${route.params.displayName || "User"}`,
-        })}
+        options={{ headerShown: false }}
       />
-      <HomeNav.Screen
+      {/*     <HomeNav.Screen
         name="EditProfile"
         component={EditProfile}
         options={{ headerTitle: "Edit your profile" }}
@@ -184,7 +183,11 @@ export const MessengerStack = () => {
 
 export const TabsStack = () => (
   <Tab.Navigator tabBar={(props) => <Tabbar {...props} />}>
-    <Tab.Screen name="Home" component={HomeStack} options={{headerShown: false}}/>
+    <Tab.Screen
+      name="Home"
+      component={HomeStack}
+      options={{ headerShown: false }}
+    />
     <Tab.Screen name="Search" component={SearchStack} />
     <Tab.Screen name="Notification" component={NotificationStack} />
     <Tab.Screen name="Messenger" component={MessengerStack} />

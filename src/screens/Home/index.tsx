@@ -13,15 +13,14 @@ import { Avatar } from "../../components/Avatar";
 import { MainHeader } from "../../components/MainHeader";
 import { Icon } from "../../components/Icon";
 import { getColorScheme } from "../../helpers";
-
-const Container = styled.View`
-  background-color: #fff;
-`;
+import { PostCard } from "../../components/Home/PostCard";
+import { useNavigation } from "@react-navigation/native";
 
 export const Home = () => {
   const scheme = useColorScheme();
   const { theme } = getColorScheme("AUTOMATIC", scheme);
   const colors = theme.colors;
+  const navigation = useNavigation();
 
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -42,8 +41,12 @@ export const Home = () => {
   }, []);
 
   const UserAvatar = (
-    <TouchableOpacity>
-      <Avatar user={USER} />
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate("UserProfile");
+      }}
+    >
+      <Avatar imageUri={USER.imageUri} />
     </TouchableOpacity>
   );
 
@@ -52,6 +55,21 @@ export const Home = () => {
       <Icon name="Settings" size={25} color={colors.text} />
     </Pressable>
   );
+
+  const PostItem = ({ item }) => {
+    return (
+      <PostCard
+        id={item.id}
+        avatar={item.user.imageUri}
+        userName={item.user.name}
+        userHandle={item.user.username}
+        desc={item.content}
+        likeCount={item.likeCount}
+        comments={item.comments}
+        timestamp={item.createdAt}
+      ></PostCard>
+    );
+  };
 
   return (
     <>
@@ -62,13 +80,13 @@ export const Home = () => {
         rightComponent={Settings}
       ></MainHeader>
 
-      {/* <FlatList
-        data={posts}
-        renderItem={({ item }) => <Text>{JSON.stringify(item)}</Text> }
+      <FlatList
+        data={POSTS}
+        renderItem={PostItem}
         keyExtractor={(item) => item.id}
         refreshing={loading}
         onRefresh={fetchPosts}
-      /> */}
+      />
     </>
   );
 };

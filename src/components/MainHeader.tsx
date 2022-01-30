@@ -16,6 +16,8 @@ const Container = styled.View<{ insetTop: number }>`
   padding-top: ${({ insetTop }) => insetTop}px;
   background: ${({ theme }) => theme.secondary};
   z-index: 2;
+  border-bottom-width: 1px;
+  border-color: #ccc;
 `;
 
 const SectionContainer = styled.View`

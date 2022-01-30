@@ -35,3 +35,6 @@ export { default as Search } from "./search.svg";
 export { default as Send } from "./send.svg";
 export { default as Bubble } from "./bubble.svg";
 export { default as Logo } from "./logo.svg";
+export { default as Flag } from "./flag.svg";
+export { default as Dot } from "./dot.svg";
+export { default as Bookmarkplus } from "./bookmarkplus.svg";

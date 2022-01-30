@@ -3,6 +3,7 @@ import { Dimensions } from "react-native";
 export const TABBAR_HEIGHT = 70;
 export const PIXEL_COUNT = 16;
 export const HEADER_HEIGHT = 40;
+export const PROFILE_HEADER_HEIGHT = 100;
 
 export enum STATES {
   IDLE = "IDLE",
