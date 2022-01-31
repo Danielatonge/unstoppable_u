@@ -156,7 +156,9 @@ export const PostCard = ({
             </IconContainer>
           </View>
           {bookmark ? (
-            <View></View>
+            <TouchableOpacity>
+              <Icon name="Bookmarkminus" size={24} color={colors.text} />
+            </TouchableOpacity>
           ) : (
             <TouchableOpacity>
               <Icon name="Bookmarkplus" size={24} color={colors.text} />

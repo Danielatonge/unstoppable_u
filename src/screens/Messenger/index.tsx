@@ -6,6 +6,7 @@ import { MESSAGES } from "../../mock";
 import { MainHeader } from "../../components/MainHeader";
 import { MessengerCard } from "../../components/Messenger/MessengerCard";
 import { SearchMessages } from "../../components/Search/SearchMessages";
+import { stall } from "../../helpers";
 
 export const Messenger = () => {
   const [messages, setMessages] = useState([]);
@@ -14,7 +15,7 @@ export const Messenger = () => {
   const fetchMessages = async () => {
     setLoading(true);
     try {
-      setTimeout(() => setMessages(MESSAGES), 2000);
+      await stall(500).then(() => setMessages(MESSAGES));
     } catch (error) {
       console.log(error);
     } finally {

@@ -9,6 +9,7 @@ import { MentorItem } from "../../components/Search/MentorItem";
 import { UserAvatar } from "../../components/UserAvatar";
 import { Settings } from "../../components/Settings";
 import styled from "styled-components";
+import { stall } from "../../helpers";
 
 const SuggestionText = styled.Text`
   padding: 0px 10px;
@@ -32,7 +33,7 @@ export const SearchProfile = () => {
   const fetchResults = async () => {
     setLoading(true);
     try {
-      setTimeout(() => setResults(MENTORS), 2000);
+      await stall(500).then(() => setResults(MENTORS));
     } catch (error) {
       console.log(error);
     } finally {

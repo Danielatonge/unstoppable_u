@@ -31,6 +31,7 @@ export const SearchMessages = () => {
         onChangeText={onChangeText}
         value={text}
         placeholder="Search Messages"
+        placeholderTextColor="#999"
       />
     </SearchBar>
   );

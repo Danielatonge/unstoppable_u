@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import { NOTIFICATIONS, POSTS, USER } from "../../mock";
 import { MainHeader } from "../../components/MainHeader";
-import { getColorScheme } from "../../helpers";
+import { getColorScheme, stall } from "../../helpers";
 import { useNavigation } from "@react-navigation/native";
 import { NotificationCard } from "../../components/Notification/NotificationCard";
 
@@ -26,7 +26,7 @@ export const Notification = () => {
   const fetchNotifications = async () => {
     setLoading(true);
     try {
-      setTimeout(() => setNotification(NOTIFICATIONS), 2000);
+      await stall(500).then(() => setNotification(NOTIFICATIONS));
     } catch (error) {
       console.log(error);
     } finally {

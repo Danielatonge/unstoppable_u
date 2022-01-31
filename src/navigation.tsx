@@ -2,13 +2,15 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, useTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
-import { Button, Settings, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { Tabbar } from "./components/Tabbar";
 import { Home } from "./screens/Home";
 import { Messenger } from "./screens/Messenger";
 import { SearchProfile } from "./screens/SearchProfile";
 import { Notification } from "./screens/Notification";
 import { UserProfile } from "./screens/Profile/UserProfile";
+import { Chat } from "./screens/Messenger/Chat";
+import { Settings } from "./screens/Settings";
 
 export const RootStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -20,23 +22,19 @@ const MessengerNav = createNativeStackNavigator();
 
 const HomeStack = () => {
   return (
-    <HomeNav.Navigator>
+    <HomeNav.Navigator initialRouteName="Feed">
       <HomeNav.Screen
         name="Feed"
         options={{ headerShown: false }}
         component={Home}
       />
-      {/* <HomeNav.Screen
-        name="Profile"
-        component={Profile}
-        options={({ navigation }) => ({
-          headerRight: () => (
-            <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
-              <Icon name="Settings" size={25} color={colors.text} />
-            </TouchableOpacity>
-          ),
+      <HomeNav.Screen
+        name="Settings"
+        component={Settings}
+        options={({ route }) => ({
+          headerTitle: "Settings",
         })}
-      /> */}
+      />
       <HomeNav.Screen
         name="UserProfile"
         component={UserProfile}
@@ -129,14 +127,15 @@ export const MessengerStack = () => {
         component={Messenger}
         options={{ headerShown: false }}
       />
-      {/* <MessengerNav.Screen
+
+      <MessengerNav.Screen
         name="Chat"
         component={Chat}
         options={({ route }) => ({
-          headerTitle: `${route.params.displayName || "User"}`,
+          headerTitle: "User",
         })}
       />
-      <MessengerNav.Screen name="Settings" component={Settings} />
+      {/*  <MessengerNav.Screen name="Settings" component={Settings} />
       <MessengerNav.Screen name="About" component={About} />
       <MessengerNav.Group screenOptions={{ presentation: "modal" }}>
         <MessengerNav.Screen
@@ -179,7 +178,7 @@ export const MessengerStack = () => {
 
 export const TabsStack = () => (
   <Tab.Navigator
-    initialRouteName="Search"
+    initialRouteName="Home"
     tabBar={(props) => <Tabbar {...props} />}
   >
     <Tab.Screen

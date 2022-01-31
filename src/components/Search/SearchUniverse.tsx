@@ -19,6 +19,7 @@ export const SearchUniverse = () => {
       onChangeText={onChangeText}
       value={text}
       placeholder="Search Our Universe"
+      placeholderTextColor="#999"
     />
   );
 };

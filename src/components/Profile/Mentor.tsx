@@ -2,6 +2,7 @@ import { View, Text, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 import { MENTORS } from "../../mock";
 import { MentorItem } from "../Search/MentorItem";
+import { stall } from "../../helpers";
 
 export const Mentor = () => {
   const [results, setResults] = useState([]);
@@ -10,7 +11,7 @@ export const Mentor = () => {
   const fetchResults = async () => {
     setLoading(true);
     try {
-      setTimeout(() => setResults(MENTORS), 2000);
+        await stall(500).then(() => setResults(MENTORS));
     } catch (error) {
       console.log(error);
     } finally {

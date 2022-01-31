@@ -5,6 +5,8 @@ import { MainHeader } from "../../components/MainHeader";
 import { PostItem } from "../../components/Home/PostItem";
 import { UserAvatar } from "../../components/UserAvatar";
 import { Settings } from "../../components/Settings";
+import { stall } from "../../helpers";
+import { HomePH } from "./HomePH";
 
 export const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -13,7 +15,7 @@ export const Home = () => {
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      setTimeout(() => setPosts(POSTS), 2000);
+      await stall(500).then(() => setPosts(POSTS));
     } catch (error) {
       console.log(error);
     } finally {

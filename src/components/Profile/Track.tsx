@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { PostCard } from "../Home/PostCard";
 import { POSTS } from "../../mock";
 import { PostItem } from "../Home/PostItem";
+import { stall } from "../../helpers";
 
 export const Track = () => {
   const [posts, setPosts] = useState([]);
@@ -11,7 +12,7 @@ export const Track = () => {
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      setTimeout(() => setPosts(POSTS), 2000);
+      await stall(500).then(() => setPosts(POSTS));
     } catch (error) {
       console.log(error);
     } finally {
@@ -29,6 +30,7 @@ export const Track = () => {
       keyExtractor={(item) => item.id}
       refreshing={loading}
       onRefresh={fetchPosts}
+      contentContainerStyle={{ overflow: "hidden" }}
     />
   );
 };

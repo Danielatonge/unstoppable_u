@@ -12,9 +12,13 @@ export const BottomTabBadge = () => (
       width: 10,
       borderWidth: 2,
       borderColor: "white",
-      zIndex: 10,
-      elevation: 10,
     }}
-    containerStyle={{ position: "absolute", top: -2, left: 49 }}
+    containerStyle={{
+      position: "absolute",
+      top: -2,
+      left: 49,
+      zIndex: 2,
+      elevation: 2,
+    }}
   />
 );
