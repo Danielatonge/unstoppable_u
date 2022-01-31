@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getColorScheme } from "../helpers";
 import { Icon } from "./Icon";
 import { HEADER_HEIGHT } from "../constants";
+import { SearchUniverse } from "./Search/SearchUniverse";
 
 const Container = styled.View<{ insetTop: number }>`
   flex-direction: row;
@@ -56,14 +57,7 @@ interface Props {
   close?: boolean;
   backAction?(): void;
 }
-const SearchInput = styled.TextInput`
-  border-radius: 50px;
-  height: 32px;
-  padding: 0px 40px;
-  font-size: 16px;
-  width: 90%;
-  background-color: #eee
-`;
+
 export const MainHeader = ({
   logo,
   search,
@@ -107,20 +101,12 @@ export const MainHeader = ({
     <EmptyContainer></EmptyContainer>
   );
 
-  const [text, onChangeText] = useState(null);
-
   const CenterComponent = () => {
     if (logo) {
       return <Icon name="Logo" size={32} />;
     }
     if (search) {
-      return (
-        <SearchInput
-          onChangeText={onChangeText}
-          value={text}
-          placeholder="Search Our Universe"
-        />
-      );
+      return <SearchUniverse />;
     }
     return <Title>{title}</Title>;
   };

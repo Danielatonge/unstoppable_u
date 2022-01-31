@@ -1,12 +1,12 @@
 import { View, Text, useColorScheme } from "react-native";
 import React from "react";
-import { ProfileHeader } from "../components/ProfileHeader";
+import { ProfileHeader } from "../../components/Profile/ProfileHeader";
 import styled from "styled-components";
-import { Avatar } from "../components/Avatar";
-import { USER } from "../mock";
-import { Icon } from "../components/Icon";
-import { getColorScheme } from "../helpers";
-import { UserTabView } from "../components/UserTabView";
+import { Avatar } from "../../components/Avatar";
+import { USER } from "../../mock";
+import { Icon } from "../../components/Icon";
+import { getColorScheme } from "../../helpers";
+import { UserTabView } from "../../components/Profile/UserTabView";
 
 const Container = styled.View`
   padding: 0 10px;

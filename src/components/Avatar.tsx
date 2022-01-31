@@ -1,8 +1,6 @@
 import { View, Text, Image } from "react-native";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { USER } from "../mock";
-import { User } from "../constants";
 
 const Container = styled.View<{ size: number; border: boolean }>`
   width: ${({ size }) => size}px;

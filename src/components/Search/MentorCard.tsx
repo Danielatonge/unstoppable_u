@@ -6,13 +6,13 @@ import {
   useColorScheme,
   ImageBackground,
 } from "react-native";
-import React from "react";
-import { Avatar } from "./Avatar";
-import { Icon } from "./Icon";
-import { SCREEN_PADDING } from "../theme";
+import React, { useEffect, useRef, useState } from "react";
+import { Avatar } from "../Avatar";
+import { Icon } from "../Icon";
+import { SCREEN_PADDING } from "../../theme";
 import styled from "styled-components";
-import { abbreviateNumber, getColorScheme } from "../helpers";
-import { MENTOR_BG } from "../constants";
+import { abbreviateNumber, getColorScheme } from "../../helpers";
+import { MENTOR_BG } from "../../constants";
 
 const PostContainer = styled.Pressable`
   height: 260px;
@@ -23,6 +23,7 @@ const PostContainer = styled.Pressable`
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
   margin-bottom: 5px;
+  overflow: hidden;
 `;
 
 const InfoContainer = styled.View`
@@ -107,7 +108,7 @@ interface MentorProps {
   achievement: string;
   likeCount: number;
   followCount: number;
-  tags: string;
+  tags?: string;
 }
 
 export const MentorCard = ({
@@ -129,7 +130,7 @@ export const MentorCard = ({
     <PostContainer>
       <ImageBackground
         source={{ uri: MENTOR_BG[randomIndex] }}
-        style={{ justifyContent: "center" }}
+        style={{ justifyContent: "center", overflow: "hidden" }}
         resizeMode="cover"
       >
         <InfoContainer>

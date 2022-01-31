@@ -1,7 +1,7 @@
 import { View, Text, useColorScheme } from "react-native";
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { getColorScheme } from "../helpers";
+import { getColorScheme } from "../../helpers";
 import { Track } from "./Track";
 import { Mentor } from "./Mentor";
 import { Bookmark } from "./Bookmark";

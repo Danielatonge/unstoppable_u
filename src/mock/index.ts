@@ -116,3 +116,37 @@ export const MENTORS = [
     tags: "#founder #entrepreneur #tesla #spaceX #mars ",
   },
 ];
+
+export const NOTIFICATIONS = [
+  {
+    userId: "u1",
+    userUri: "https://robohash.org/elonmusk?bgset=bg2",
+    message:
+      "In case you missed the new challenge Elon Musk talked about. You can have a look now. ",
+  },
+  {
+    userId: "u2",
+    userUri: "https://robohash.org/billgates?bgset=bg2",
+    message:
+      "In case you missed the new challenge Bill Gates talked about. You can have a look now. ",
+  },
+];
+
+export const MESSAGES = [
+  {
+    userId: "u1",
+    name: "kamila",
+    username: "kamilav",
+    userUri: "https://robohash.org/dasdf?bgset=bg2",
+    message: "You: Hi kamila, hope you're fine.",
+    lastTimeStamp: "2020-08-27T12:00:00.000Z",
+  },
+  {
+    userId: "u2",
+    name: "john Bis",
+    username: "john43",
+    userUri: "https://robohash.org/bifdgadces?bgset=bg2",
+    message: "You accepted john's request. ",
+    lastTimeStamp: "2020-08-27T12:00:00.000Z",
+  },
+];

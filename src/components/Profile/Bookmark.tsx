@@ -1,10 +1,9 @@
 import { View, Text, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
-import { PostCard } from "./Home/PostCard";
-import { POSTS } from "../mock";
-import { PostItem } from "./Home/PostItem";
+import { POSTS } from "../../mock";
+import { PostItem } from "../Home/PostItem";
 
-export const Track = () => {
+export const Bookmark = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -24,8 +23,10 @@ export const Track = () => {
   }, []);
   return (
     <FlatList
-      data={POSTS}
-      renderItem={({ item }) => <PostItem item={item} profile={true} />}
+      data={posts}
+      renderItem={({ item }) => (
+        <PostItem item={item} profile={false} bookmark={true} />
+      )}
       keyExtractor={(item) => item.id}
       refreshing={loading}
       onRefresh={fetchPosts}

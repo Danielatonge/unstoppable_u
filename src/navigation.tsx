@@ -8,7 +8,7 @@ import { Home } from "./screens/Home";
 import { Messenger } from "./screens/Messenger";
 import { SearchProfile } from "./screens/SearchProfile";
 import { Notification } from "./screens/Notification";
-import { UserProfile } from "./screens/UserProfile";
+import { UserProfile } from "./screens/Profile/UserProfile";
 
 export const RootStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -192,7 +192,15 @@ export const TabsStack = () => (
       component={SearchStack}
       options={{ headerShown: false }}
     />
-    <Tab.Screen name="Notification" component={NotificationStack} />
-    <Tab.Screen name="Messenger" component={MessengerStack} />
+    <Tab.Screen
+      name="Notification"
+      component={NotificationStack}
+      options={{ headerShown: false }}
+    />
+    <Tab.Screen
+      name="Messenger"
+      component={MessengerStack}
+      options={{ headerShown: false }}
+    />
   </Tab.Navigator>
 );

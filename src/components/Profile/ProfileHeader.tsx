@@ -10,9 +10,9 @@ import React, { ReactNode } from "react";
 import styled from "styled-components";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { getColorScheme } from "../helpers";
-import { Icon } from "./Icon";
-import { PROFILE_BANNER_URL, PROFILE_HEADER_HEIGHT } from "../constants";
+import { getColorScheme } from "../../helpers";
+import { Icon } from "../Icon";
+import { PROFILE_BANNER_URL, PROFILE_HEADER_HEIGHT } from "../../constants";
 
 const Container = styled(ImageBackground)<{
   insetTop: number;

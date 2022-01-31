@@ -3,10 +3,12 @@ import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Badge } from "react-native-elements";
 
 import { TABBAR_HEIGHT } from "../constants";
 import { Icon } from "./Icon";
 import { getColorScheme } from "../helpers";
+import { BottomTabBadge } from "./Badge/BottomTabBadge";
 
 const Wrapper = styled.View<{ insetBottom: number }>`
   height: ${TABBAR_HEIGHT}px;
@@ -66,24 +68,48 @@ const TabbarComponent = ({ props }: Props) => {
   return (
     <View style={{ backgroundColor: colors.secondary }}>
       <Wrapper insetBottom={insets.bottom}>
-        {props.state.routeNames.map((route, index) => (
-          <PressableWrapper
-            key={route}
-            onPress={() => {
-              const isFocused = props.state.index === index;
-              const event = props.navigation.emit({
-                type: "tabPress",
-                target: route,
-                canPreventDefault: true,
-              });
-              if (!isFocused && !event.defaultPrevented) {
-                props.navigation.navigate(route);
-              }
-            }}
-          >
-            <Icon name={route} size={24} color={colors.text} />
-          </PressableWrapper>
-        ))}
+        {props.state.routeNames.map((route, index) => {
+          if (route === "Notification") {
+            return (
+              <PressableWrapper
+                key={route}
+                onPress={() => {
+                  const isFocused = props.state.index === index;
+                  const event = props.navigation.emit({
+                    type: "tabPress",
+                    target: route,
+                    canPreventDefault: true,
+                  });
+                  if (!isFocused && !event.defaultPrevented) {
+                    props.navigation.navigate(route);
+                  }
+                }}
+              >
+                <BottomTabBadge />
+                <Icon name={route} size={24} color={colors.text} />
+              </PressableWrapper>
+            );
+          } else {
+            return (
+              <PressableWrapper
+                key={route}
+                onPress={() => {
+                  const isFocused = props.state.index === index;
+                  const event = props.navigation.emit({
+                    type: "tabPress",
+                    target: route,
+                    canPreventDefault: true,
+                  });
+                  if (!isFocused && !event.defaultPrevented) {
+                    props.navigation.navigate(route);
+                  }
+                }}
+              >
+                <Icon name={route} size={24} color={colors.text} />
+              </PressableWrapper>
+            );
+          }
+        })}
         <TabIndicatorWrapper
           style={{
             left: indicatorPosition,

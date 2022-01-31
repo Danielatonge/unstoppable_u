@@ -1,6 +1,12 @@
 import { PostCard } from "./PostCard";
 
-export const PostItem = ({ item, profile, bookmark }) => {
+interface Prop {
+  item: any;
+  profile?: boolean;
+  bookmark?: boolean;
+}
+
+export const PostItem = ({ item, profile, bookmark }: Prop) => {
   return (
     <PostCard
       id={item.id}
