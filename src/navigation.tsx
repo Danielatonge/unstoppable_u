@@ -11,6 +11,9 @@ import { Notification } from "./screens/Notification";
 import { UserProfile } from "./screens/Profile/UserProfile";
 import { Chat } from "./screens/Messenger/Chat";
 import { Settings } from "./screens/Settings";
+import { ViewPost } from "./screens/ViewPost";
+import { ComposePost } from "./screens/ComposePost";
+import { Comments } from "./screens/Comments";
 
 export const RootStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -40,12 +43,29 @@ const HomeStack = () => {
         component={UserProfile}
         options={{ headerShown: false }}
       />
-      {/*     <HomeNav.Screen
+      <HomeNav.Screen
+        name="ViewPost"
+        component={ViewPost}
+        options={{ headerTitle: "Post" }}
+      />
+      <HomeNav.Screen
+        name="ComposePost"
+        component={ComposePost}
+        options={{ headerShown: false }}
+      />
+      <HomeNav.Group screenOptions={{ presentation: "modal" }}>
+        <HomeNav.Screen
+          name="Comment"
+          component={Comments}
+          options={{ headerTitle: "Comments" }}
+        />
+      </HomeNav.Group>
+      {/*   <HomeNav.Screen
         name="EditProfile"
         component={EditProfile}
         options={{ headerTitle: "Edit your profile" }}
       />
-      <HomeNav.Screen name="Settings" component={Settings} />
+        <HomeNav.Screen name="Settings" component={Settings} />
       <HomeNav.Screen name="About" component={About} />
       <HomeNav.Group screenOptions={{ presentation: "modal" }}>
         <HomeNav.Screen

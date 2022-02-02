@@ -49,12 +49,7 @@ export const SearchProfile = () => {
 
   return (
     <>
-      <MainHeader
-        title="Home"
-        search
-        leftComponent={<UserAvatar imageUri={currentUser.imageUri} />}
-        rightComponent={<Settings />}
-      ></MainHeader>
+      <MainHeader title="Home" search></MainHeader>
       <SuggestionBar>
         <SuggestionText>Suggestions for you</SuggestionText>
       </SuggestionBar>

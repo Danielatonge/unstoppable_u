@@ -13,6 +13,7 @@ import { SCREEN_PADDING } from "../../theme";
 import styled from "styled-components";
 import { abbreviateNumber, getColorScheme } from "../../helpers";
 import { MENTOR_BG } from "../../constants";
+import { useNavigation } from "@react-navigation/native";
 
 const PostContainer = styled.Pressable`
   height: 260px;
@@ -125,9 +126,14 @@ export const MentorCard = ({
   const { theme } = getColorScheme("AUTOMATIC", scheme);
   const colors = theme.colors;
   const randomIndex = Math.floor(Math.random() * 3);
+  const navigation = useNavigation();
 
   return (
-    <PostContainer>
+    <PostContainer
+      onPress={() => {
+        navigation.navigate("UserProfile");
+      }}
+    >
       <ImageBackground
         source={{ uri: MENTOR_BG[randomIndex] }}
         style={{ justifyContent: "center", overflow: "hidden" }}

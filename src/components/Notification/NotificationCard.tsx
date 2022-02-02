@@ -12,6 +12,7 @@ import { SCREEN_PADDING } from "../../theme";
 import { Avatar } from "../Avatar";
 import { Icon } from "../Icon";
 import moment from "moment";
+import { useNavigation } from "@react-navigation/native";
 
 const PostContainer = styled.Pressable<{ profile: boolean }>`
   padding: ${SCREEN_PADDING}px;
@@ -91,8 +92,13 @@ interface PostProps {
 }
 
 export const NotificationCard = ({ id, avatar, message }: PostProps) => {
+  const navigation = useNavigation();
   return (
-    <PostContainer>
+    <PostContainer
+      onPress={() => {
+        navigation.navigate("ViewPost");
+      }}
+    >
       <View>
         <Avatar imageUri={avatar} size={50}></Avatar>
       </View>

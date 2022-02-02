@@ -6,13 +6,19 @@ export const POSTS = [
       username: "johnpaul",
       name: "John Paul",
       imageUri: "https://robohash.org/johnpaul?bgset=bg2",
+      currentPosition:
+        "Student at Innopolis University, Frontend Developer and Researcher",
+      goals:
+        " Aspiring developer - Web & Mobile UI/UX development; Graphics; Illustrations",
     },
     createdAt: "2020-08-27T12:00:00.000Z",
     content:
-      "Went through courses on Pluralsight.\n + JavaScript: Getting Started by Mark \n + JavaScript Syntax and Operators \n + JavaScript Variables and Types \n Here is what I was able to build.\n johnpaul.ru/javascript \n #javascript #webdev #frontend",
+      "Went through courses on Pluralsight.\n + JavaScript: Getting Started by Mark \n + JavaScript Syntax and Operators \n #javascript #webdev #frontend",
     image: "https://picsum.photos/350/300",
     commentCount: 12,
     likeCount: 54,
+    detailed:
+      "Many IT giants like Google, Apple, Yandex, etc., find mindfulness helpful and offer their employees the opportunity to spend time on practising mindfulness. Nevertheless, claims of performance improvement with meditation. Many IT giants like Google, Apple, Yandex, etc., find mindfulness helpful and offer their employees the opportunity to spend time on practising mindfulness. Nevertheless, claims of performance improvement with meditation",
   },
   {
     id: "2",

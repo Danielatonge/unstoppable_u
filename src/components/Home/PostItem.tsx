@@ -4,9 +4,10 @@ interface Prop {
   item: any;
   profile?: boolean;
   bookmark?: boolean;
+  comment?: boolean;
 }
 
-export const PostItem = ({ item, profile, bookmark }: Prop) => {
+export const PostItem = ({ item, profile, bookmark, comment }: Prop) => {
   return (
     <PostCard
       id={item.id}
@@ -19,6 +20,7 @@ export const PostItem = ({ item, profile, bookmark }: Prop) => {
       timestamp={item.createdAt}
       profile={profile}
       bookmark={bookmark}
+      comment={comment}
     ></PostCard>
   );
 };

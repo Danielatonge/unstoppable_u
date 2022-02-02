@@ -7,6 +7,7 @@ import { USER } from "../../mock";
 import { Icon } from "../../components/Icon";
 import { getColorScheme } from "../../helpers";
 import { UserTabView } from "../../components/Profile/UserTabView";
+import { useNavigation } from "@react-navigation/native";
 
 const Container = styled.View`
   padding: 0 10px;
@@ -17,7 +18,7 @@ const UserRow = styled.View`
   justify-content: space-between;
 `;
 
-const EditButton = styled.TouchableOpacity`
+const NewPostButton = styled.TouchableOpacity`
   border-radius: 50px;
   border-width: 2px;
   width: 100px;
@@ -29,7 +30,7 @@ const EditButton = styled.TouchableOpacity`
   border-color: ${({ theme }) => theme.text};
 `;
 
-const EditText = styled.Text`
+const NewPostText = styled.Text`
   color: ${({ theme }) => theme.text};
   font-weight: bold;
 `;
@@ -74,6 +75,7 @@ export const UserProfile = () => {
   const scheme = useColorScheme();
   const { theme } = getColorScheme("AUTOMATIC", scheme);
   const colors = theme.colors;
+  const navigation = useNavigation();
 
   return (
     <>
@@ -98,9 +100,9 @@ export const UserProfile = () => {
         />
         <UserRow>
           <View></View>
-          <EditButton>
-            <EditText>Edit profile</EditText>
-          </EditButton>
+          <NewPostButton onPress={() => navigation.navigate("ComposePost")}>
+            <NewPostText>New post</NewPostText>
+          </NewPostButton>
         </UserRow>
         <SectionBio>
           <UserText>John Paul</UserText>

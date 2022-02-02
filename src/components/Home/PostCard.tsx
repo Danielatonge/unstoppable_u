@@ -12,6 +12,7 @@ import { SCREEN_PADDING } from "../../theme";
 import { Avatar } from "../Avatar";
 import { Icon } from "../Icon";
 import moment from "moment";
+import { useNavigation } from "@react-navigation/native";
 
 const PostContainer = styled.Pressable<{ profile: boolean }>`
   padding: ${SCREEN_PADDING}px;
@@ -93,6 +94,7 @@ interface PostProps {
   timestamp: string;
   profile?: boolean;
   bookmark?: boolean;
+  comment?: boolean;
 }
 
 export const PostCard = ({
@@ -106,19 +108,29 @@ export const PostCard = ({
   timestamp,
   profile,
   bookmark,
+  comment,
 }: PostProps) => {
   const scheme = useColorScheme();
   const { theme } = getColorScheme("AUTOMATIC", scheme);
   const colors = theme.colors;
-
+  const navigation = useNavigation();
   const [userInfo, setUserInfo] = useState();
   const [loading, setLoading] = useState(false);
 
   const [localLiked, setLocalLiked] = useState(false);
   const localLikesCount = likeCount + (localLiked ? 1 : 0);
 
+  const Comment = comment ? (
+    <View></View>
+  ) : (
+    <Bookmark bookmark={bookmark} colors={colors} />
+  );
+
   return (
-    <PostContainer profile={profile}>
+    <PostContainer
+      profile={profile}
+      onPress={() => navigation.navigate("ViewPost")}
+    >
       <View>
         <TouchableOpacity>
           <Avatar imageUri={avatar} size={60}></Avatar>
@@ -130,6 +142,7 @@ export const PostCard = ({
           <HeaderInfo>
             <TouchableOpacity
               style={{ flexDirection: "row", alignSelf: "center" }}
+              onPress={() => navigation.navigate("UserProfile")}
             >
               <UserText>{userName}</UserText>
               <HandleText>@{userHandle}</HandleText>
@@ -150,22 +163,25 @@ export const PostCard = ({
               <Icon name="Heart" size={24} color={colors.text} />
               <IconLabel>{likeCount}</IconLabel>
             </IconContainer>
-            <IconContainer>
+            <IconContainer onPress={() => navigation.navigate("Comment")}>
               <Icon name="Bubble" size={24} color={colors.text} />
               <IconLabel>{comments ? comments.length : 4}</IconLabel>
             </IconContainer>
           </View>
-          {bookmark ? (
-            <TouchableOpacity>
-              <Icon name="Bookmarkminus" size={24} color={colors.text} />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity>
-              <Icon name="Bookmarkplus" size={24} color={colors.text} />
-            </TouchableOpacity>
-          )}
+          {Comment}
         </ActionContainer>
       </RightContainer>
     </PostContainer>
   );
 };
+
+const Bookmark = ({ bookmark, colors }) =>
+  bookmark ? (
+    <TouchableOpacity>
+      <Icon name="Bookmarkminus" size={24} color={colors.text} />
+    </TouchableOpacity>
+  ) : (
+    <TouchableOpacity>
+      <Icon name="Bookmarkplus" size={24} color={colors.text} />
+    </TouchableOpacity>
+  );

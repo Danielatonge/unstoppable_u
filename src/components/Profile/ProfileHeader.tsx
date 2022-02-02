@@ -20,7 +20,7 @@ const Container = styled(ImageBackground)<{
 }>`
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   height: ${({ insetTop }) => PROFILE_HEADER_HEIGHT + insetTop}px;
   padding: 0 10px;
   padding-top: ${({ insetTop }) => insetTop}px;
@@ -49,22 +49,39 @@ const Title = styled.Text`
   color: ${({ theme }) => "#fff" || theme.text};
 `;
 
-const BackText = styled.Text`
-  font-weight: 400;
-  font-size: 14px;
-  color: ${({ theme }) => theme.text};
+const ComposeButton = styled.TouchableOpacity<{ isAndroid: boolean }>`
+  border-radius: 50px;
+  border-width: 2px;
+  width: 100px;
+  height: 40px;
+  margin-top: 15px;
+  padding: 0px;
+  align-items: center;
+  justify-content: center;
+  border-color: ${({ theme }) => "white" || theme.text};
+  color: white;
+  position: absolute;
+  right: 10px;
+  top: ${({ isAndroid }) => (isAndroid ? 10 : 50)}px;
+`;
+
+const ComposeText = styled.Text`
+  color: ${({ theme }) => 'white' || theme.text};
+  font-weight: bold;
 `;
 
 interface Props {
   profileMotivation?: string;
   backgroundImageUri?: string;
   backAction?(): void;
+  create?(): void;
 }
 
 export const ProfileHeader = ({
   profileMotivation,
   backgroundImageUri = PROFILE_BANNER_URL,
   backAction,
+  create,
 }: Props) => {
   const scheme = useColorScheme();
   const { theme } = getColorScheme("AUTOMATIC", scheme);
@@ -98,9 +115,16 @@ export const ProfileHeader = ({
         />
       </BackButton>
 
-      <SectionContainer style={{ alignItems: "center" }}>
+      <SectionContainer
+        style={{ alignItems: "center" }}
+      >
         <Title>{profileMotivation}</Title>
       </SectionContainer>
+      {create && (
+        <ComposeButton isAndroid={isAndroid} onPress={create}>
+          <ComposeText>Create</ComposeText>
+        </ComposeButton>
+      )}
     </Container>
   );
 };
