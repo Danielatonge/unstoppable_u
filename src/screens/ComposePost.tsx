@@ -19,6 +19,7 @@ import { getColorScheme } from "../helpers";
 import { PostItem } from "../components/Home/PostItem";
 import * as ImagePicker from "expo-image-picker";
 import { ProfileHeader } from "../components/Profile/ProfileHeader";
+import { ComposeAction } from "../components/ComposeAction";
 
 const Wrapper = styled.View<{ profile: boolean }>`
   background: ${({ theme }) => theme.secondary};
@@ -45,15 +46,6 @@ const HeaderRow = styled.View`
 const HeaderItem = styled.View`
   flex-direction: row;
   align-items: center;
-`;
-
-const BackButton = styled.TouchableOpacity<{ active: boolean }>`
-  flex-direction: row;
-  align-items: center;
-  background-color: #000;
-  border-radius: 50px;
-  margin-left: 10px;
-  opacity: ${({ active }) => (active ? 1 : 0.3)};
 `;
 
 const UserText = styled.Text`
@@ -103,6 +95,14 @@ const DescriptionText = styled.Text`
   color: ${({ theme }) => theme.text};
   line-height: 18px;
 `;
+const BackButton = styled.TouchableOpacity`
+  flex-direction: row;
+  align-items: center;
+  background-color: #000;
+  border-radius: 50px;
+  margin-left: 10px;
+  opacity: 1;
+`;
 
 export const ComposePost = () => {
   const navigation = useNavigation();
@@ -133,16 +133,19 @@ export const ComposePost = () => {
       quality: 1,
     });
 
-    console.log(result);
+    console.log("Result: ", result);
 
     if (!result.cancelled) {
       setImage(result.uri);
+      setSelectImg(true);
     } else {
       setImage(null);
+      setSelectImg(false);
     }
   };
 
   const createPost = () => {
+    if (!caption) return;
     console.log("CAPTION:", caption);
     console.log("Description:", detailed);
     console.log("Links:", link);
@@ -172,21 +175,28 @@ export const ComposePost = () => {
           <HeaderRow>
             <View></View>
             <HeaderItem>
-              <EditButton
+              <ComposeAction
                 iconName="Description"
                 setState={setAddDesc}
                 action={() => {}}
               />
-              <EditButton
-                iconName="Photo"
-                setState={setSelectImg}
-                action={pickImage}
-              />
-              <EditButton
+
+              <ComposeAction
                 iconName="Link"
                 setState={setAddLink}
                 action={() => {}}
               />
+              <BackButton
+                onPress={() => pickImage()}
+                style={{ alignItems: "center", justifyContent: "center" }}
+              >
+                <Icon
+                  name="Photo"
+                  color={"#fff"}
+                  style={{ margin: 10 }}
+                  size={20}
+                />
+              </BackButton>
             </HeaderItem>
           </HeaderRow>
         </Row>
@@ -264,34 +274,5 @@ export const ComposePost = () => {
         )}
       </PostContainer>
     </Wrapper>
-  );
-};
-
-interface EditButtonProps {
-  iconName: string;
-  setState?: (value: boolean) => void;
-  action?(): void;
-}
-
-const EditButton = ({ iconName, setState, action }: EditButtonProps) => {
-  const [active, setActive] = useState(true);
-  useEffect(() => {
-    setActive(false);
-  }, []);
-  useEffect(() => {
-    setState(active);
-  }, [active]);
-  const handleClick = () => {
-    setActive(!active);
-    if (action) action();
-  };
-  return (
-    <BackButton
-      active={active}
-      onPress={() => handleClick()}
-      style={{ alignItems: "center", justifyContent: "center" }}
-    >
-      <Icon name={iconName} color={"#fff"} style={{ margin: 10 }} size={20} />
-    </BackButton>
   );
 };

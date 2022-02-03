@@ -15,12 +15,7 @@ export const Settings = () => {
         thumbColor: "#4db3ff",
         disabled: false,
         action: () => {
-          Alert.alert("Account", "Coming Soon.", [
-            {
-              text: "Cancel",
-              style: "cancel",
-            },
-          ]);
+          navigation.navigate("EditProfile");
         },
       },
       {
@@ -28,7 +23,15 @@ export const Settings = () => {
         thumbIcon: "Logout",
         thumbColor: "#35ce8d",
         action: () => {
-          Alert.alert("Log in / Sign up", "Coming Soon.", [
+          navigation.navigate("CreationModal");
+        },
+      },
+      {
+        title: "Data Collectors",
+        thumbIcon: "Connect",
+        thumbColor: "#ed6a5a",
+        action: () => {
+          Alert.alert("Data Collectors", "Coming Soon.", [
             {
               text: "Cancel",
               style: "cancel",
@@ -41,7 +44,7 @@ export const Settings = () => {
       {
         title: "About",
         thumbIcon: "Infos",
-        thumbColor: "#35ce8d",
+        thumbColor: "#4db3ff",
         action: () => {
           Alert.alert("About", "Coming Soon.", [
             {
@@ -54,7 +57,7 @@ export const Settings = () => {
       {
         title: "Contact us",
         thumbIcon: "Pencil",
-        thumbColor: "#ed6a5a",
+        thumbColor: "#35ce8d",
         action: () => {
           Alert.alert(
             "Contact",
@@ -78,7 +81,7 @@ export const Settings = () => {
       {
         title: "Tips",
         thumbIcon: "Star",
-        thumbColor: "#35ce8d",
+        thumbColor: "#ed6a5a",
         action: () => {
           Alert.alert("Tips", "Coming Soon.", [
             {

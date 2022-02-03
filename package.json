@@ -16,6 +16,7 @@
   "dependencies": {
     "@expo/vector-icons": "^12.0.0",
     "@gennadysx/react-native-skeleton-placeholder": "^5.0.1",
+    "@react-native-community/masked-view": "^0.1.11",
     "@react-native-masked-view/masked-view": "^0.2.6",
     "@react-navigation/bottom-tabs": "^6.0.5",
     "@react-navigation/material-top-tabs": "^6.1.0",
@@ -40,6 +41,7 @@
     "react-dom": "17.0.1",
     "react-native": "0.64.3",
     "react-native-elements": "^3.4.2",
+    "react-native-gesture-handler": "~2.1.0",
     "react-native-gifted-chat": "^0.16.3",
     "react-native-pager-view": "5.4.9",
     "react-native-safe-area-context": "3.3.2",
@@ -47,6 +49,7 @@
     "react-native-svg": "12.1.1",
     "react-native-tab-view": "^3.1.1",
     "react-native-web": "0.17.1",
+    "react-navigation-stack": "^2.10.4",
     "styled-components": "^5.3.3"
   },
   "devDependencies": {

@@ -1,8 +1,12 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer, useTheme } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  useNavigation,
+  useTheme,
+} from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
-import { TouchableOpacity } from "react-native";
+import { Button, Platform, TouchableOpacity } from "react-native";
 import { Tabbar } from "./components/Tabbar";
 import { Home } from "./screens/Home";
 import { Messenger } from "./screens/Messenger";
@@ -14,6 +18,12 @@ import { Settings } from "./screens/Settings";
 import { ViewPost } from "./screens/ViewPost";
 import { ComposePost } from "./screens/ComposePost";
 import { Comments } from "./screens/Comments";
+import { EditProfile } from "./screens/Settings/EditProfile";
+import { Login } from "./screens/Auth/Login";
+import { SimpleButton } from "./components/Button/SimpleButton";
+import { AccountCreation } from "./screens/Auth/AccountCreation";
+import { AccountPasswordCreation } from "./screens/Auth/AccountPasswordCreation";
+import { Signin } from "./screens/Auth/Signin";
 
 export const RootStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -21,7 +31,7 @@ const HomeNav = createNativeStackNavigator();
 const SearchNav = createNativeStackNavigator();
 const NotificationNav = createNativeStackNavigator();
 const MessengerNav = createNativeStackNavigator();
-// const LoginNav = createNativeStackNavigator();
+const LoginNav = createNativeStackNavigator();
 
 const HomeStack = () => {
   return (
@@ -60,12 +70,13 @@ const HomeStack = () => {
           options={{ headerTitle: "Comments" }}
         />
       </HomeNav.Group>
-      {/*   <HomeNav.Screen
+      <HomeNav.Screen
         name="EditProfile"
         component={EditProfile}
-        options={{ headerTitle: "Edit your profile" }}
+        options={{ headerTitle: "Manage your profile" }}
       />
-        <HomeNav.Screen name="Settings" component={Settings} />
+
+      {/*      <HomeNav.Screen name="Settings" component={Settings} />
       <HomeNav.Screen name="About" component={About} />
       <HomeNav.Group screenOptions={{ presentation: "modal" }}>
         <HomeNav.Screen
@@ -168,21 +179,44 @@ export const MessengerStack = () => {
   );
 };
 
-// export const LoginStack = () => (
-//   <LoginNav.Navigator>
-//     <LoginNav.Screen
-//       name="LoginSelection"
-//       component={LoginSelection}
-//       options={({ navigation, route }) => ({
-//         headerLeft: () => <Button onPress={navigation.goBack} title="Close" />,
-//         headerTitle: "Login",
-//       })}
-//     />
-//     <LoginNav.Screen
-//       name="Login"
-//       component={Login}
-//       options={{ headerTitle: "Sign in" }}
-//     />
+const loginHeaderLeft = (navigation) =>
+  Platform.OS === "android" ? null : (
+    <SimpleButton
+      style={{ width: 60 }}
+      onPress={navigation.goBack}
+      title={"Back"}
+    />
+  );
+export const LoginStack = () => (
+  <LoginNav.Navigator>
+    <LoginNav.Screen
+      name="Login"
+      component={Login}
+      options={({ navigation, route }) => ({
+        headerLeft: () => loginHeaderLeft(navigation),
+        headerTitle: "Login",
+      })}
+    />
+    <LoginNav.Screen
+      name="AccountCreation"
+      component={AccountCreation}
+      options={({ navigation, route }) => ({
+        headerTitle: "Create your account",
+      })}
+    />
+    <LoginNav.Screen
+      name="AccountPasswordCreation"
+      component={AccountPasswordCreation}
+      options={{ headerTitle: "Create your password" }}
+    />
+    <LoginNav.Screen
+      name="SignIn"
+      component={Signin}
+      options={{ headerTitle: "Sign In" }}
+    />
+  </LoginNav.Navigator>
+);
+
 //     <LoginNav.Screen
 //       name="AccountCreation"
 //       component={AccountCreation}

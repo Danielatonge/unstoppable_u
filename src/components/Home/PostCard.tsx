@@ -4,6 +4,7 @@ import {
   Text,
   useColorScheme,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { getColorScheme } from "../../helpers";
@@ -132,9 +133,7 @@ export const PostCard = ({
       onPress={() => navigation.navigate("ViewPost")}
     >
       <View>
-        <TouchableOpacity>
-          <Avatar imageUri={avatar} size={60}></Avatar>
-        </TouchableOpacity>
+        <Avatar imageUri={avatar} size={60}></Avatar>
       </View>
       <RightContainer>
         {profile ? <PathFill></PathFill> : <View></View>}
@@ -150,7 +149,25 @@ export const PostCard = ({
               <TimeText>{moment(timestamp).fromNow()}</TimeText>
             </TouchableOpacity>
           </HeaderInfo>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert(
+                "Flag Post",
+                "Help us get rid of innapropriate content",
+                [
+                  {
+                    text: "Report",
+                    onPress: () => {},
+                    style: "default",
+                  },
+                  {
+                    text: "Cancel",
+                    style: "cancel",
+                  },
+                ]
+              );
+            }}
+          >
             <Icon name="Dots" color={colors.text}></Icon>
           </TouchableOpacity>
         </HeaderRow>

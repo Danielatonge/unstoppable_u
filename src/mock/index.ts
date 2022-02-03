@@ -85,6 +85,7 @@ export const USER = {
   username: "johnpaul",
   name: "John Paul",
   imageUri: "https://robohash.org/johnpaul?bgset=bg2",
+  email:"abc@gmail.com",
   achievement: "Founder of Apple",
   likeCount: 20000000,
   followCount: 7000000,
@@ -154,5 +155,19 @@ export const MESSAGES = [
     userUri: "https://robohash.org/bifdgadces?bgset=bg2",
     message: "You accepted john's request. ",
     lastTimeStamp: "2020-08-27T12:00:00.000Z",
+  },
+];
+
+export const COMMENTS = [
+  {
+    userUri: "https://robohash.org/bifdgadces?bgset=bg2",
+    username: "John Paul",
+    userhandle: "johnpaul",
+    currentPosition:
+      "Student at Innopolis University, Frontend Developer and Researcher",
+    createdAt: "2020-08-27T12:00:00.000Z",
+    content:
+      "In case you missed the new challenge Bill Gates talked about. You can have a look now.",
+    likeCount: 39,
   },
 ];

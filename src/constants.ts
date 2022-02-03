@@ -4,6 +4,7 @@ export const TABBAR_HEIGHT = 70;
 export const PIXEL_COUNT = 16;
 export const HEADER_HEIGHT = 40;
 export const PROFILE_HEADER_HEIGHT = 100;
+export const BUTTON_WIDTH = 260;
 
 export const PROFILE_BANNER_URL =
   "https://cdn.discordapp.com/attachments/934291385157296148/937313626090532924/default-banner.png";

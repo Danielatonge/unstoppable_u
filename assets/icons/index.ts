@@ -42,3 +42,4 @@ export { default as Bookmarkminus } from "./bookmarkminus.svg";
 export { default as Link } from "./link.svg";
 export { default as Calendar } from "./calendar.svg";
 export { default as Follow } from "./follow.svg";
+export { default as Connect } from "./connect.svg";

@@ -128,7 +128,7 @@ export const UserProfile = () => {
             <IconLabel>Joined September 2018</IconLabel>
           </JoinedDate>
           <Statistics>
-            <ConnectText>217 Following 118 Followers</ConnectText>
+            <ConnectText>217 Mentors 118 Mentoring</ConnectText>
           </Statistics>
         </SectionBio>
       </Container>

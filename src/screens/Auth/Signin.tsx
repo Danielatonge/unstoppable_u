@@ -8,6 +8,7 @@ import { BUTTON_WIDTH } from "../../constants";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { USER } from "../../mock";
+import { AppLoader } from "../../AppLoader";
 
 const Container = styled.ScrollView`
   background-color: #fff;
@@ -36,73 +37,38 @@ const LabelText = styled.Text`
   color: ${({ theme }) => theme.text};
 `;
 
+const ResetArea = styled.TouchableOpacity``;
+const ResetText = styled.Text``;
 const MainText = styled.Text`
   font-size: 20px;
   font-weight: 600;
-  text-align: center;
 `;
 const AboutText = styled.Text`
 text-align: center;
-margin-top: 10px;
+margin-vertical: 10px;
 line-height: 22px
 font-size: 14px 
 `;
 
-const ResetArea = styled.TouchableOpacity``;
-const ResetText = styled.Text``;
-
-export const AccountCreation = () => {
+export const Signin = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [image, setImage] = useState("https://robohash.org/johnpaul?bgset=bg2");
   const { colors } = useTheme();
-
   const navigation = useNavigation();
-
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log("Result: ", result);
-
-    if (!result.cancelled) {
-      setImage(result.uri);
-    } else {
-      setImage(null);
-    }
-  };
-
   return (
     <Container contentContainerStyle={{ alignItems: "center" }}>
-      <AvatarImage
-        imageUri={image}
-        size={100}
-        style={{ backgroundColor: "#eee" }}
-      />
-      <SimpleButton
-        style={{ marginTop: 15, marginBottom: 10, width: 150 }}
-        onPress={pickImage}
-        fill={false}
-        title={"Edit Picture"}
-      />
+      <AppLoader />
 
       <View
         style={{
           justifyContent: "center",
           alignItems: "center",
           width: "70%",
-          paddingVertical: 10,
+          paddingVertical: 20,
         }}
       >
-        <MainText>Welcome to the Unstoppable Universe!</MainText>
-        <AboutText>Create your account and be Unstoppable!</AboutText>
+        <MainText>Welcome back!</MainText>
       </View>
-
       <InputGroup>
         <LabelText>Username:</LabelText>
         <TextInputField
@@ -129,16 +95,23 @@ export const AccountCreation = () => {
           keyboardType="email-address"
         />
       </InputGroup>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "70%",
+        }}
+      >
+        <View></View>
+        <ResetArea>
+          <ResetText>Reset your password</ResetText>
+        </ResetArea>
+      </View>
       <SimpleButton
         style={{ marginVertical: 20, width: "70%" }}
-        onPress={() =>
-          navigation.navigate("AccountPasswordCreation", {
-            username,
-            email,
-            image,
-          })
-        }
-        title="Next"
+        onPress={() => navigation.navigate("Feed")}
+        title="Sign in"
         fill={true}
         disabled={username.length !== 0 || email.length !== 0}
       />

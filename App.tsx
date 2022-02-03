@@ -6,7 +6,7 @@ import { ThemeProvider } from "styled-components";
 import { getColorScheme } from "./src/helpers";
 import useCachedResources from "./src/hooks/useCachedResources";
 import useColorScheme from "./src/hooks/useColorScheme";
-import { RootStack, TabsStack } from "./src/navigation";
+import { LoginStack, RootStack, TabsStack } from "./src/navigation";
 import { AppLoader } from "./src/AppLoader";
 
 export default function App() {
@@ -23,11 +23,22 @@ export default function App() {
           <NavigationContainer>
             <StatusBar barStyle={statusBarStyle} />
             <RootStack.Navigator>
-              <RootStack.Screen
-                name="Main"
-                component={TabsStack}
-                options={{ headerShown: false }}
-              />
+              <RootStack.Group>
+                <RootStack.Screen
+                  name="Main"
+                  component={TabsStack}
+                  options={{ headerShown: false }}
+                />
+              </RootStack.Group>
+              <RootStack.Group screenOptions={{ presentation: "card" }}>
+                <RootStack.Screen
+                  name="CreationModal"
+                  options={{
+                    headerShown: false,
+                  }}
+                  component={LoginStack}
+                />
+              </RootStack.Group>
             </RootStack.Navigator>
           </NavigationContainer>
         </SafeAreaProvider>
