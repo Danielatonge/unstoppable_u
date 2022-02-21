@@ -1,4 +1,4 @@
-import { FlatList, TouchableOpacity } from "react-native";
+import { FlatList, TouchableOpacity, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import { POSTS, USER } from "../../mock";
 import { MainHeader } from "../../components/MainHeader";
@@ -9,6 +9,8 @@ import { stall } from "../../helpers";
 import { Icon } from "../../components/Icon";
 import styled from "styled-components";
 import { useNavigation } from "@react-navigation/native";
+import { GET_RECENT_POST } from "../../operations/queries/post";
+import { useQuery } from "@apollo/client";
 
 const NewPostButton = styled.TouchableOpacity`
   background-color: #6dce9e;
@@ -23,27 +25,20 @@ const NewPostButton = styled.TouchableOpacity`
 `;
 
 export const Home = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
-
   const navigation = useNavigation();
 
-  const fetchPosts = async () => {
-    setLoading(true);
-    try {
-      await stall(500).then(() => setPosts(POSTS));
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    data: postsData,
+    loading: loadingPosts,
+    fetchMore: fetchMorePosts,
+  } = useQuery(GET_RECENT_POST);
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
+  console.log(postsData);
   const currentUser = USER;
+
+  if (loadingPosts) {
+    return <Text>Loading .....</Text>;
+  }
 
   return (
     <>
@@ -55,13 +50,12 @@ export const Home = () => {
       ></MainHeader>
 
       <FlatList
-        data={posts}
+        data={postsData?.posts}
         renderItem={({ item }) => (
           <PostItem item={item} profile={false} bookmark={false} />
         )}
         keyExtractor={(item) => item.id}
-        refreshing={loading}
-        onRefresh={fetchPosts}
+        refreshing={loadingPosts}
       />
       <NewPostButton
         activeOpacity={0.8}
@@ -72,3 +66,4 @@ export const Home = () => {
     </>
   );
 };
+// onRefresh={fetchMorePosts}

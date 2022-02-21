@@ -11,12 +11,14 @@ export const PostItem = ({ item, profile, bookmark, comment }: Prop) => {
   return (
     <PostCard
       id={item.id}
-      avatar={item.user.imageUri}
-      userName={item.user.name}
-      userHandle={item.user.username}
+      avatar={
+        item.user?.userImage || "https://robohash.org/stevejobs?bgset=bg2"
+      }
+      userName={item.user?.fullName}
+      userHandle={item.user?.userName}
       desc={item.content}
-      likeCount={item.likeCount}
-      comments={item.comments}
+      likeCount={10}
+      commentCount={20}
       timestamp={item.createdAt}
       profile={profile}
       bookmark={bookmark}

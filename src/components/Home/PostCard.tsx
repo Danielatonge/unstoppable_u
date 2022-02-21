@@ -91,7 +91,7 @@ interface PostProps {
   userHandle: string;
   desc: string;
   likeCount: number;
-  comments: string[];
+  commentCount: number;
   timestamp: string;
   profile?: boolean;
   bookmark?: boolean;
@@ -105,7 +105,7 @@ export const PostCard = ({
   userHandle,
   desc,
   likeCount = 0,
-  comments,
+  commentCount,
   timestamp,
   profile,
   bookmark,
@@ -182,7 +182,7 @@ export const PostCard = ({
             </IconContainer>
             <IconContainer onPress={() => navigation.navigate("Comment")}>
               <Icon name="Bubble" size={24} color={colors.text} />
-              <IconLabel>{comments ? comments.length : 4}</IconLabel>
+              <IconLabel>{commentCount}</IconLabel>
             </IconContainer>
           </View>
           {Comment}

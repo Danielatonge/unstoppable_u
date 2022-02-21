@@ -17,12 +17,7 @@ export enum STATES {
   ERROR = "ERROR",
 }
 
-export interface User {
-  id: string;
-  username: string;
-  name: string;
-  imageUri: string;
-}
+
 
 export const MENTOR_BG = [
   "https://cdn.discordapp.com/attachments/934291385157296148/937446216407605349/bgm1.png",

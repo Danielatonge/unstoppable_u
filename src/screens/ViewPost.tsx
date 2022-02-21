@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { POSTS } from "../mock";
 import styled from "styled-components";
 import { SCREEN_PADDING } from "../theme";
@@ -15,6 +15,7 @@ import { Icon } from "../components/Icon";
 import moment from "moment";
 import { getColorScheme } from "../helpers";
 import { PostItem } from "../components/Home/PostItem";
+import { gql, useQuery } from "@apollo/client";
 
 const Wrapper = styled.ScrollView<{ profile: boolean }>`
   background: ${({ theme }) => theme.secondary};
@@ -69,7 +70,6 @@ const MediaImage = styled.Image`
   border-radius: 10px;
 `;
 
-
 const CaptionContainer = styled.View`
   margin-vertical: 4px;
 `;
@@ -115,6 +115,15 @@ const CommentContainer = styled.View`
   padding-left: 0px;
 `;
 
+const GET_POST = gql`
+  {
+    posts(where: { id: "1" }) {
+      id
+      content
+    }
+  }
+`;
+
 export const ViewPost = () => {
   const navigation = useNavigation();
 
@@ -135,8 +144,14 @@ export const ViewPost = () => {
   const commentCount = item.commentCount;
   const timestamp = item.createdAt;
   const bookmark = false;
-
   const comments = POSTS;
+
+  const [newPost, setNewPost] = useState([]);
+  const { data, loading } = useQuery(GET_POST);
+
+  useEffect(() => {
+    console.log(newPost);
+  }, [newPost]);
 
   return (
     <Wrapper>

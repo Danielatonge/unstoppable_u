@@ -38,7 +38,3 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
 
 export type Themes = "AUTOMATIC" | "LIGHT" | "DARK";
 
-
-export type Pixel = {
-  color: string;
-};

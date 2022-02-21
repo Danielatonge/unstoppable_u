@@ -3,10 +3,11 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import styled from "styled-components";
 import { Icon } from "../../components/Icon";
+import { useApolloClient } from "../../hooks/useApolloClient";
 
 export const Settings = () => {
   const navigation = useNavigation();
-
+  const { clearCache } = useApolloClient();
   const items = [
     [
       {
@@ -19,10 +20,11 @@ export const Settings = () => {
         },
       },
       {
-        title: "Log in / Sign up",
+        title: "Log out",
         thumbIcon: "Logout",
         thumbColor: "#35ce8d",
         action: () => {
+          clearCache();
           navigation.navigate("CreationModal");
         },
       },

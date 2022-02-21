@@ -192,10 +192,7 @@ export const LoginStack = () => (
     <LoginNav.Screen
       name="Login"
       component={Login}
-      options={({ navigation, route }) => ({
-        headerLeft: () => loginHeaderLeft(navigation),
-        headerTitle: "Login",
-      })}
+      options={{ headerShown: false }}
     />
     <LoginNav.Screen
       name="AccountCreation"

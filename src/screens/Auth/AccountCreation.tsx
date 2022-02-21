@@ -51,44 +51,21 @@ font-size: 14px
 const ResetArea = styled.TouchableOpacity``;
 const ResetText = styled.Text``;
 
-export const AccountCreation = () => {
+export const AccountCreation = ({ route }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [image, setImage] = useState("https://robohash.org/johnpaul?bgset=bg2");
   const { colors } = useTheme();
 
   const navigation = useNavigation();
-
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log("Result: ", result);
-
-    if (!result.cancelled) {
-      setImage(result.uri);
-    } else {
-      setImage(null);
-    }
-  };
+  const { sub, picture, nickname } = route.params;
 
   return (
     <Container contentContainerStyle={{ alignItems: "center" }}>
       <AvatarImage
-        imageUri={image}
+        imageUri={picture ? picture : image}
         size={100}
         style={{ backgroundColor: "#eee" }}
-      />
-      <SimpleButton
-        style={{ marginTop: 15, marginBottom: 10, width: 150 }}
-        onPress={pickImage}
-        fill={false}
-        title={"Edit Picture"}
       />
 
       <View
@@ -100,22 +77,22 @@ export const AccountCreation = () => {
         }}
       >
         <MainText>Welcome to the Unstoppable Universe!</MainText>
-        <AboutText>Create your account and be Unstoppable!</AboutText>
+        <AboutText>Be Unstoppable!</AboutText>
       </View>
 
       <InputGroup>
         <LabelText>Username:</LabelText>
         <TextInputField
           placeholder="Enter your username"
-          value={username}
+          value={nickname}
           maxLength={20}
           autoCapitalize={"none"}
-          onChangeText={setUsername}
           style={{ color: colors.text }}
           autocompleteType="username"
+          disabled
         />
       </InputGroup>
-      <InputGroup>
+      {/* <InputGroup>
         <LabelText>Email:</LabelText>
         <TextInputField
           placeholder="Enter your email"
@@ -128,19 +105,12 @@ export const AccountCreation = () => {
           autocompleteType="email"
           keyboardType="email-address"
         />
-      </InputGroup>
+      </InputGroup> */}
       <SimpleButton
         style={{ marginVertical: 20, width: "70%" }}
-        onPress={() =>
-          navigation.navigate("AccountPasswordCreation", {
-            username,
-            email,
-            image,
-          })
-        }
-        title="Next"
+        onPress={() => navigation.navigate("Main")}
+        title="Done"
         fill={true}
-        disabled={username.length !== 0 || email.length !== 0}
       />
     </Container>
   );
