@@ -17,8 +17,8 @@ export const PostItem = ({ item, profile, bookmark, comment }: Prop) => {
       userName={item.user?.fullName}
       userHandle={item.user?.userName}
       desc={item.content}
-      likeCount={10}
-      commentCount={20}
+      likeCount={item.likeCount}
+      commentCount={item.commentCount}
       timestamp={item.createdAt}
       profile={profile}
       bookmark={bookmark}

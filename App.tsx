@@ -9,7 +9,6 @@ import useColorScheme from "./src/hooks/useColorScheme";
 import { LoginStack, RootStack, TabsStack } from "./src/navigation";
 import { AppLoader } from "./src/AppLoader";
 import { useApolloClient } from "./src/hooks/useApolloClient";
-import { useLoggedInUser } from "./src/hooks/useLoggedInUser";
 
 if (__DEV__) {
   import("./ReactotronConfig").then(() => console.log("Reactotron Configured"));
@@ -20,6 +19,7 @@ export default function App() {
   const colorScheme = useColorScheme();
   const { theme, statusBarStyle } = getColorScheme("AUTOMATIC", colorScheme);
   const { client, clearCache } = useApolloClient();
+  // clearCache();
   if (showSplash || !client) {
     return <AppLoader></AppLoader>;
   } else {

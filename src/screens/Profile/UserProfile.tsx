@@ -1,5 +1,5 @@
-import { View, Text, useColorScheme } from "react-native";
-import React from "react";
+import { View, Text, useColorScheme, ActivityIndicator } from "react-native";
+import React, { useEffect } from "react";
 import { ProfileHeader } from "../../components/Profile/ProfileHeader";
 import styled from "styled-components";
 import { Avatar } from "../../components/Avatar";
@@ -8,6 +8,10 @@ import { Icon } from "../../components/Icon";
 import { getColorScheme } from "../../helpers";
 import { UserTabView } from "../../components/Profile/UserTabView";
 import { useNavigation } from "@react-navigation/native";
+import { FIND_COMPLETE_USER_GIVEN_ID } from "../../operations/queries/user";
+import { useLazyQuery } from "@apollo/client";
+import { useDecodedToken } from "../../hooks/useDecodedToken";
+import moment from "moment";
 
 const Container = styled.View`
   padding: 0 10px;
@@ -77,16 +81,37 @@ export const UserProfile = () => {
   const colors = theme.colors;
   const navigation = useNavigation();
 
+  const decodedToken = useDecodedToken();
+  const [
+    getCompleteUserGivenId,
+    { data: fetchedUsers, error: errorFetchingUser, loading },
+  ] = useLazyQuery(FIND_COMPLETE_USER_GIVEN_ID, { fetchPolicy: "cache-first" });
+
+  useEffect(() => {
+    const getAuthToken = async () => {
+      try {
+        getCompleteUserGivenId({ variables: { id: decodedToken?.sub } });
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    getAuthToken();
+  }, [decodedToken]);
+
+  if (loading) {
+    return <ActivityIndicator></ActivityIndicator>;
+  }
+  const user = fetchedUsers?.users[0];
   return (
     <>
       <ProfileHeader
-        profileMotivation="What's stopping you?"
+        profileMotivation={"What's stopping you?"}
         backAction={() => {}}
       ></ProfileHeader>
 
       <Container>
         <Avatar
-          imageUri={USER.imageUri}
+          imageUri={user?.userImage || USER.imageUri}
           size={70}
           style={{
             borderWidth: 3,
@@ -105,30 +130,44 @@ export const UserProfile = () => {
           </NewPostButton>
         </UserRow>
         <SectionBio>
-          <UserText>John Paul</UserText>
-          <HandleText>@johnpaul</HandleText>
-          <DescriptionText>
-            Aspiring developer - Web & Mobile UI/UX development; Graphics;
-            Illustrations
-          </DescriptionText>
+          <UserText>{user?.fullName || ""}</UserText>
+          <HandleText>@{user?.userName || ""}</HandleText>
+          <DescriptionText>{user?.goal || "Lifelong learner"}</DescriptionText>
           <JoinedDate>
-            <Icon
-              name="Link"
-              color={colors.text}
-              size={20}
-              style={{ alignSelf: "center", marginRight: 5 }}
-            />
-            <IconLabel>johnpaul.ru</IconLabel>
-            <Icon
-              name="Calendar"
-              color={colors.text}
-              size={20}
-              style={{ alignSelf: "center", marginRight: 3 }}
-            />
-            <IconLabel>Joined September 2018</IconLabel>
+            {user?.email ? (
+              <>
+                <Icon
+                  name="Link"
+                  color={colors.text}
+                  size={20}
+                  style={{ alignSelf: "center", marginRight: 5 }}
+                />
+                <IconLabel>{user?.email}</IconLabel>
+              </>
+            ) : (
+              <View></View>
+            )}
+
+            {user?.createdAt ? (
+              <>
+                <Icon
+                  name="Link"
+                  color={colors.text}
+                  size={20}
+                  style={{ alignSelf: "center", marginRight: 5 }}
+                />
+                <IconLabel>
+                  Joined {moment(user?.createdAt).fromNow()}
+                </IconLabel>
+              </>
+            ) : (
+              <View></View>
+            )}
           </JoinedDate>
           <Statistics>
-            <ConnectText>217 Mentors 118 Mentoring</ConnectText>
+            <ConnectText>
+              {217 + " Mentors"} {118 + " Mentoring"}
+            </ConnectText>
           </Statistics>
         </SectionBio>
       </Container>

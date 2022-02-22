@@ -3,7 +3,6 @@ import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback, useEffect, useState } from "react";
 import { stall } from "../helpers";
-import { useLoggedInUser } from "./useLoggedInUser";
 
 export default function useCachedResources() {
   const [isReady, setReady] = useState(false);

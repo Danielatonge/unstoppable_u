@@ -18,7 +18,6 @@ export const FIND_USER_GIVEN_ID = gql`
       fullName
       userName
       userImage
-      token @client
     }
   }
 `;
@@ -41,7 +40,6 @@ export const FIND_COMPLETE_USER_GIVEN_ID = gql`
       country
       averageRating
       createdAt
-      token @client
     }
   }
 `;

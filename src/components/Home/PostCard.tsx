@@ -121,6 +121,11 @@ export const PostCard = ({
   const [localLiked, setLocalLiked] = useState(false);
   const localLikesCount = likeCount + (localLiked ? 1 : 0);
 
+  const likePost = (id: string) => {
+    setLocalLiked(true)
+
+  };
+
   const Comment = comment ? (
     <View></View>
   ) : (
@@ -172,17 +177,20 @@ export const PostCard = ({
           </TouchableOpacity>
         </HeaderRow>
         <ContentContainer>
-          <DescriptionText>{desc}</DescriptionText>
+          <DescriptionText>
+            {desc &&
+              (desc.length >= 200 ? desc.slice(0, 200).concat("...") : desc)}
+          </DescriptionText>
         </ContentContainer>
         <ActionContainer>
           <View style={{ flexDirection: "row" }}>
-            <IconContainer>
+            <IconContainer onPress={() => likePost(id)}>
               <Icon name="Heart" size={24} color={colors.text} />
-              <IconLabel>{likeCount}</IconLabel>
+              <IconLabel>{localLikesCount}</IconLabel>
             </IconContainer>
             <IconContainer onPress={() => navigation.navigate("Comment")}>
               <Icon name="Bubble" size={24} color={colors.text} />
-              <IconLabel>{commentCount}</IconLabel>
+              <IconLabel>{commentCount || 0}</IconLabel>
             </IconContainer>
           </View>
           {Comment}

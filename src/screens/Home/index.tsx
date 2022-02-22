@@ -1,16 +1,24 @@
-import { FlatList, TouchableOpacity, Text } from "react-native";
-import React, { useEffect, useState } from "react";
-import { POSTS, USER } from "../../mock";
+import {
+  FlatList,
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+} from "react-native";
+import React, { useEffect, useReducer, useState } from "react";
 import { MainHeader } from "../../components/MainHeader";
 import { PostItem } from "../../components/Home/PostItem";
 import { UserAvatar } from "../../components/UserAvatar";
 import { Settings } from "../../components/Settings";
-import { stall } from "../../helpers";
 import { Icon } from "../../components/Icon";
 import styled from "styled-components";
 import { useNavigation } from "@react-navigation/native";
 import { GET_RECENT_POST } from "../../operations/queries/post";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLoggedInUser } from "../../hooks/useLoggedInUser";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { printAsyncStorageValues } from "../../utils/asyncStorage";
+import { FIND_USER_GIVEN_ID } from "../../operations/queries/user";
+import { useDecodedToken } from "../../hooks/useDecodedToken";
 
 const NewPostButton = styled.TouchableOpacity`
   background-color: #6dce9e;
@@ -26,36 +34,67 @@ const NewPostButton = styled.TouchableOpacity`
 
 export const Home = () => {
   const navigation = useNavigation();
-
   const {
     data: postsData,
     loading: loadingPosts,
     fetchMore: fetchMorePosts,
-  } = useQuery(GET_RECENT_POST);
+  } = useQuery(GET_RECENT_POST, {
+    variables: { offset: 0 },
+    fetchPolicy: "network-only",
+  });
 
-  console.log(postsData);
-  const currentUser = USER;
+  const [
+    getCompleteUserGivenId,
+    { data: fetchedUsers, error: errorFetchingUser, loading },
+  ] = useLazyQuery(FIND_USER_GIVEN_ID, { fetchPolicy: "cache-first" });
 
-  if (loadingPosts) {
-    return <Text>Loading .....</Text>;
-  }
+  const decodedToken = useDecodedToken();
+  //used to re-render the component
+  const [_, forceUpdate] = useReducer((x) => x + 1, 0);
+  //get logged in user avatar
+
+  // console.log(loading);
+  // console.log(decodedToken?.sub);
+
+  useEffect(() => {
+    const getAuthToken = async () => {
+      try {
+        getCompleteUserGivenId({ variables: { id: decodedToken?.sub } });
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    getAuthToken();
+  }, [decodedToken]);
 
   return (
     <>
       <MainHeader
         title="Home"
         logo
-        leftComponent={<UserAvatar imageUri={currentUser.imageUri} />}
+        leftComponent={
+          loading ? (
+            <ActivityIndicator></ActivityIndicator>
+          ) : (
+            <UserAvatar imageUri={fetchedUsers?.users[0].userImage} />
+          )
+        }
         rightComponent={<Settings />}
       ></MainHeader>
-
+      {/* <Text> {!loadingPosts && postsData?.posts.length}</Text> */}
       <FlatList
         data={postsData?.posts}
         renderItem={({ item }) => (
           <PostItem item={item} profile={false} bookmark={false} />
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => {
+          return item.id;
+        }}
         refreshing={loadingPosts}
+        onRefresh={() => forceUpdate()}
+        onEndReached={() =>
+          fetchMorePosts({ variables: { offset: postsData?.posts.length } })
+        }
       />
       <NewPostButton
         activeOpacity={0.8}

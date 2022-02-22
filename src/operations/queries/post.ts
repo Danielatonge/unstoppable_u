@@ -1,11 +1,15 @@
 import { gql } from "@apollo/client";
 
 export const GET_RECENT_POST = gql`
-  query GetPosts {
-    posts(options: { limit: 10, sort: { createdAt: DESC } }) @persist {
+  query GetPosts($offset: Int) {
+    posts(options: { offset: $offset, limit: 10, sort: { createdAt: DESC } })
+      @persist {
       id
       content
       createdAt
+      likeCount
+      commentCount
+      liked @client
       user {
         id
         fullName

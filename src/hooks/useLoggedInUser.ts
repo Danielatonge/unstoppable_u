@@ -2,15 +2,19 @@ import { useCallback, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
 import { useLazyQuery } from "@apollo/client";
-import { FIND_COMPLETE_USER_GIVEN_ID } from "../operations/queries/user";
+import {
+  FIND_COMPLETE_USER_GIVEN_ID,
+  FIND_USER_GIVEN_ID,
+} from "../operations/queries/user";
 
 export const useLoggedInUser = () => {
   const [userData, setUserData] = useState(null);
   const [showHomeScreen, setShowHomeScreen] = useState(false);
   const [
     getCompleteUserGivenId,
-    { data: fetchedUsers, error: errorFetchingUser, loading: loadingUser },
-  ] = useLazyQuery(FIND_COMPLETE_USER_GIVEN_ID, { fetchPolicy: "cache-only" });
+    { data: fetchedUsers, error: errorFetchingUser, loading },
+  ] = useLazyQuery(FIND_USER_GIVEN_ID, { fetchPolicy: "cache-first" });
+  //   const [loadingUser, setLoadingUser] = useState(true);
 
   useEffect(() => {
     const getAuthToken = async () => {
@@ -20,7 +24,7 @@ export const useLoggedInUser = () => {
           setShowHomeScreen(true);
           const { sub } = jwtDecode(value);
           await getCompleteUserGivenId({ variables: { id: sub } });
-          setUserData(fetchedUsers.users[0]);
+          setUserData(fetchedUsers?.users[0]);
         }
       } catch (e) {
         console.error(e);
@@ -29,5 +33,5 @@ export const useLoggedInUser = () => {
     getAuthToken();
   }, []);
 
-  return { userData, errorFetchingUser, loadingUser };
+  return { userData, errorFetchingUser };
 };

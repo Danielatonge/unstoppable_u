@@ -13,7 +13,6 @@ import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import { FIND_USER_GIVEN_ID } from "../../operations/queries/user";
 import { CREATE_USER } from "../../operations/mutations/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLoggedInUser } from "../../hooks/useLoggedInUser";
 
 const Container = styled.ScrollView`
   background-color: #fff;

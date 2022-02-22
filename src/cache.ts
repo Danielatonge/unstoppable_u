@@ -5,25 +5,55 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const cache: InMemoryCache = new InMemoryCache({
   typePolicies: {
+    Query: {
+      fields: {
+        posts: {
+          keyArgs: false,
+          merge(existing = [], incoming, { args: { offset = 10 } }) {
+            // Slicing is necessary because the existing data is
+            // immutable, and frozen in development.
+            const merged = existing ? existing.slice(0) : [];
+            for (let i = 0; i < incoming.length; ++i) {
+              merged[offset + i] = incoming[i];
+            }
+            return merged;
+          },
+        },
+        users: {
+          keyArgs: false,
+          merge(existing = [], incoming) {
+            return incoming;
+          },
+        },
+      },
+    },
     User: {
       fields: {
         token: {
-          read() {
-            return getAuthToken();
+          read(liked = false) {
+            return liked;
           },
         },
       },
     },
   },
 });
-
-const getAuthToken = async () => {
-  try {
-    const value = await AsyncStorage.getItem("@USER_AUTH_TOKEN");
-    if (value !== null) {
-      return value;
-    }
-  } catch (e) {
-    console.error(e);
-  }
-};
+// User: {
+//       fields: {
+//         token: {
+//           read() {
+//             return getAuthToken();
+//           },
+//         },
+//       },
+//     },
+// const getAuthToken = async () => {
+//   try {
+//     const value = await AsyncStorage.getItem("@USER_AUTH_TOKEN");
+//     if (value !== null) {
+//       return value;
+//     }
+//   } catch (e) {
+//     console.error(e);
+//   }
+// };
