@@ -14,6 +14,8 @@ import { Avatar } from "../Avatar";
 import { Icon } from "../Icon";
 import moment from "moment";
 import { useNavigation } from "@react-navigation/native";
+import { SET_LIKEDUSER_POST } from "../../operations/mutations/post";
+import { useMutation } from "@apollo/client";
 
 const PostContainer = styled.Pressable<{ profile: boolean }>`
   padding: ${SCREEN_PADDING}px;
@@ -90,12 +92,14 @@ interface PostProps {
   userName: string;
   userHandle: string;
   desc: string;
-  likeCount: number;
+  likedUsers: string[];
   commentCount: number;
   timestamp: string;
+  alreadyLiked: boolean;
   profile?: boolean;
   bookmark?: boolean;
   comment?: boolean;
+  userId: string;
 }
 
 export const PostCard = ({
@@ -104,26 +108,41 @@ export const PostCard = ({
   userName,
   userHandle,
   desc,
-  likeCount = 0,
+  likedUsers,
   commentCount,
   timestamp,
+  alreadyLiked,
   profile,
   bookmark,
   comment,
+  userId,
 }: PostProps) => {
   const scheme = useColorScheme();
   const { theme } = getColorScheme("AUTOMATIC", scheme);
   const colors = theme.colors;
   const navigation = useNavigation();
-  const [userInfo, setUserInfo] = useState();
   const [loading, setLoading] = useState(false);
+  const likeCountInit = likedUsers?.length || 0;
+  const [likeCount, setLikeCount] = useState(likeCountInit);
+  const [localLiked, setLocalLiked] = useState(alreadyLiked);
 
-  const [localLiked, setLocalLiked] = useState(false);
-  const localLikesCount = likeCount + (localLiked ? 1 : 0);
+  const [setLikedUserPost, { error, data }] = useMutation(SET_LIKEDUSER_POST);
 
-  const likePost = (id: string) => {
-    setLocalLiked(true)
-
+  // database data alittle bit raw that's why alot of checks
+  const onToggleLikePost = () => {
+    setLocalLiked(!localLiked);
+    if (!localLiked) {
+      setLikeCount(likeCount + 1);
+      setLikedUserPost({
+        variables: { postId: id, userIds: [...(likedUsers || []), userId] },
+      });
+    } else {
+      setLikeCount(likeCount - 1);
+      const userIds = likedUsers?.filter((id) => id !== userId);
+      setLikedUserPost({
+        variables: { postId: id, userIds: userIds || [] },
+      });
+    }
   };
 
   const Comment = comment ? (
@@ -135,7 +154,7 @@ export const PostCard = ({
   return (
     <PostContainer
       profile={profile}
-      onPress={() => navigation.navigate("ViewPost")}
+      onPress={() => navigation.navigate("ViewPost", { postId: id, userId })}
     >
       <View>
         <Avatar imageUri={avatar} size={60}></Avatar>
@@ -184,11 +203,19 @@ export const PostCard = ({
         </ContentContainer>
         <ActionContainer>
           <View style={{ flexDirection: "row" }}>
-            <IconContainer onPress={() => likePost(id)}>
-              <Icon name="Heart" size={24} color={colors.text} />
-              <IconLabel>{localLikesCount}</IconLabel>
+            <IconContainer onPress={() => onToggleLikePost()}>
+              <Icon
+                name={localLiked ? "HeartFull" : "Heart"}
+                size={24}
+                color={localLiked ? "#ED6A5A" : colors.text}
+              />
+              <IconLabel>{likeCount}</IconLabel>
             </IconContainer>
-            <IconContainer onPress={() => navigation.navigate("Comment")}>
+            <IconContainer
+              onPress={() =>
+                navigation.navigate("Comment", { postId: id, userId })
+              }
+            >
               <Icon name="Bubble" size={24} color={colors.text} />
               <IconLabel>{commentCount || 0}</IconLabel>
             </IconContainer>

@@ -5,9 +5,17 @@ interface Prop {
   profile?: boolean;
   bookmark?: boolean;
   comment?: boolean;
+  userId: string;
 }
 
-export const PostItem = ({ item, profile, bookmark, comment }: Prop) => {
+export const PostItem = ({
+  item,
+  profile,
+  bookmark,
+  comment,
+  userId,
+}: Prop) => {
+  const alreadyLiked = item.likedUsers? item.likedUsers?.includes(userId) : false;
   return (
     <PostCard
       id={item.id}
@@ -17,12 +25,14 @@ export const PostItem = ({ item, profile, bookmark, comment }: Prop) => {
       userName={item.user?.fullName}
       userHandle={item.user?.userName}
       desc={item.content}
-      likeCount={item.likeCount}
+      likedUsers={item.likedUsers}
       commentCount={item.commentCount}
       timestamp={item.createdAt}
+      alreadyLiked={alreadyLiked}
       profile={profile}
       bookmark={bookmark}
       comment={comment}
+      userId={userId}
     ></PostCard>
   );
 };

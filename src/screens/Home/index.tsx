@@ -1,9 +1,4 @@
-import {
-  FlatList,
-  TouchableOpacity,
-  Text,
-  ActivityIndicator,
-} from "react-native";
+import { FlatList, ActivityIndicator, Text } from "react-native";
 import React, { useEffect, useReducer, useState } from "react";
 import { MainHeader } from "../../components/MainHeader";
 import { PostItem } from "../../components/Home/PostItem";
@@ -14,8 +9,6 @@ import styled from "styled-components";
 import { useNavigation } from "@react-navigation/native";
 import { GET_RECENT_POST } from "../../operations/queries/post";
 import { useLazyQuery, useQuery } from "@apollo/client";
-import { useLoggedInUser } from "../../hooks/useLoggedInUser";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { printAsyncStorageValues } from "../../utils/asyncStorage";
 import { FIND_USER_GIVEN_ID } from "../../operations/queries/user";
 import { useDecodedToken } from "../../hooks/useDecodedToken";
@@ -81,11 +74,16 @@ export const Home = () => {
         }
         rightComponent={<Settings />}
       ></MainHeader>
-      {/* <Text> {!loadingPosts && postsData?.posts.length}</Text> */}
+      <Text> {!loadingPosts && postsData?.posts.length}</Text>
       <FlatList
         data={postsData?.posts}
         renderItem={({ item }) => (
-          <PostItem item={item} profile={false} bookmark={false} />
+          <PostItem
+            item={item}
+            userId={decodedToken?.sub}
+            profile={false}
+            bookmark={false}
+          />
         )}
         keyExtractor={(item) => {
           return item.id;

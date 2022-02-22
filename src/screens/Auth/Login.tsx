@@ -1,4 +1,12 @@
-import { View, Text, Button, TextInput, Platform, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  TextInput,
+  Platform,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Avatar } from "../../components/Avatar";
@@ -93,7 +101,7 @@ export const Login = () => {
           navigation.navigate("Main");
         }
       } catch (e) {
-        console.error(e);
+        console.log("Custom Error(Not found user auth token): ", e);
       }
     };
     readCachedUser();
@@ -180,7 +188,6 @@ export const Login = () => {
       }}
     >
       <AppLoader />
-
       <View
         style={{
           justifyContent: "center",
@@ -194,12 +201,18 @@ export const Login = () => {
           Sign in or create an account to show the world how awesome you are.{" "}
         </AboutText>
       </View>
-      <SimpleButton
-        style={{ marginVertical: 20, width: "71%" }}
-        title="Sign in or Create an Account"
-        onPress={() => promptAsync({ useProxy })}
-        fill={true}
-      />
+      {result && result.type === "success" ? (
+        <View style={{ height: 60 }}>
+          <ActivityIndicator />
+        </View>
+      ) : (
+        <SimpleButton
+          style={{ marginVertical: 20, width: "71%" }}
+          title="Sign in or Create an Account"
+          onPress={() => promptAsync({ useProxy })}
+          fill={true}
+        />
+      )}
     </Container>
   );
 };

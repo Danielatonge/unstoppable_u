@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import styled from "styled-components";
 import { Icon } from "../../components/Icon";
 import { useApolloClient } from "../../hooks/useApolloClient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const Settings = () => {
   const navigation = useNavigation();
@@ -24,8 +25,10 @@ export const Settings = () => {
         thumbIcon: "Logout",
         thumbColor: "#35ce8d",
         action: () => {
-          clearCache();
-          navigation.navigate("CreationModal");
+          AsyncStorage.removeItem("@USER_AUTH_TOKEN", () => {
+            clearCache();
+            navigation.navigate("CreationModal");
+          });
         },
       },
       {

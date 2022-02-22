@@ -4,8 +4,10 @@ import {
   Image,
   TouchableOpacity,
   useColorScheme,
+  ActivityIndicator,
+  FlatList,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { POSTS } from "../mock";
 import styled from "styled-components";
 import { SCREEN_PADDING } from "../theme";
@@ -15,9 +17,13 @@ import { Icon } from "../components/Icon";
 import moment from "moment";
 import { getColorScheme } from "../helpers";
 import { PostItem } from "../components/Home/PostItem";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { GET_POST_GIVEN_ID } from "../operations/queries/post";
+import { SET_LIKEDUSER_POST } from "../operations/mutations/post";
+import { CommentItem } from "./Comments";
+import { GET_COMMENTS } from "../operations/queries/comment";
 
-const Wrapper = styled.ScrollView<{ profile: boolean }>`
+const Wrapper = styled.View<{ profile: boolean }>`
   background: ${({ theme }) => theme.secondary};
   border-bottom-width: 1px;
   border-color: #ccc;
@@ -124,37 +130,80 @@ const GET_POST = gql`
   }
 `;
 
-export const ViewPost = () => {
+export const ViewPost = ({ route }) => {
+  const { postId, userId } = route.params;
+
   const navigation = useNavigation();
+  const { data: postData, loading: loadingPost } = useQuery(GET_POST_GIVEN_ID, {
+    variables: { postId: postId },
+    fetchPolicy: "network-only",
+  });
+
+  const {
+    data: commentsData,
+    loading: loadingComments,
+    fetchMore: fetchMoreComments,
+  } = useQuery(GET_COMMENTS, {
+    variables: { postId: postId },
+    fetchPolicy: "cache-first",
+  });
+
+  // console.log({ postId, userId, postData });
+  const id = postData?.posts[0].id;
+  const avatar = postData?.posts[0].user?.userImage;
+  const userName = postData?.posts[0].user?.fullName;
+  const userHandle = postData?.posts[0].user?.userName;
+  const userCurrentPosition = postData?.posts[0].user?.currentPosition;
+  const caption = postData?.posts[0].content;
+  const detailed = postData?.posts[0].extraContent;
+  const postImage = postData?.posts[0]?.image;
+  const likedUsers = postData?.posts[0].likedUsers;
+  const commentCount = postData?.posts[0].commentCount;
+  const timestamp = postData?.posts[0].createdAt;
+  const bookmark = false;
+
+  const likeCountInit = likedUsers?.length || 0;
+  const alreadyLiked = likedUsers ? likedUsers?.includes(userId) : false;
+  const [localLiked, setLocalLiked] = useState(alreadyLiked);
+  const [_, forceUpdate] = useReducer((x) => x + 1, 0);
+  const [likeCount, setLikeCount] = useState(likeCountInit);
+
+  const [setLikedUserPost, { error, data }] = useMutation(SET_LIKEDUSER_POST);
+
+  const onToggleLikePost = () => {
+    setLocalLiked(!localLiked);
+    if (!localLiked) {
+      setLikeCount(likeCount + 1);
+      setLikedUserPost({
+        variables: { postId: id, userIds: [...(likedUsers || []), userId] },
+      });
+    } else {
+      setLikeCount(likeCount - 1);
+      const userIds = likedUsers?.filter((id) => id !== userId);
+      setLikedUserPost({
+        variables: { postId: id, userIds: userIds || [] },
+      });
+    }
+  };
 
   const scheme = useColorScheme();
   const { theme } = getColorScheme("AUTOMATIC", scheme);
   const colors = theme.colors;
 
-  const item = POSTS[0];
-  const id = item.id;
-  const avatar = item.user.imageUri;
-  const userName = item.user.name;
-  const userHandle = item.user.username;
-  const userCurrentPosition = item.user.currentPosition;
-  const caption = item.content;
-  const detailed = item.detailed;
-  const postImage = item.image;
-  const likeCount = item.likeCount;
-  const commentCount = item.commentCount;
-  const timestamp = item.createdAt;
-  const bookmark = false;
   const comments = POSTS;
 
   const [newPost, setNewPost] = useState([]);
-  const { data, loading } = useQuery(GET_POST);
 
   useEffect(() => {
     console.log(newPost);
   }, [newPost]);
 
+  if (loadingPost || loadingComments) {
+    <ActivityIndicator></ActivityIndicator>;
+  }
+
   return (
-    <Wrapper>
+    <>
       <PostContainer>
         <Row>
           <View style={{ alignItems: "center", justifyContent: "center" }}>
@@ -168,6 +217,8 @@ export const ViewPost = () => {
               >
                 <UserText>{userName}</UserText>
                 <HandleText>@{userHandle}</HandleText>
+                <Icon name="Dot" size={18} color="grey" />
+                <TimeText>{moment(timestamp).fromNow()}</TimeText>
               </TouchableOpacity>
               <TouchableOpacity>
                 <Icon name="Dots" color={colors.text}></Icon>
@@ -175,9 +226,6 @@ export const ViewPost = () => {
             </HeaderItem>
             <HeaderItem>
               <CareerText>{userCurrentPosition}</CareerText>
-            </HeaderItem>
-            <HeaderItem>
-              <TimeText>{moment(timestamp).fromNow()}</TimeText>
             </HeaderItem>
           </HeaderRow>
         </Row>
@@ -188,12 +236,18 @@ export const ViewPost = () => {
         <DetailContainer>
           <DescriptionText>{detailed}</DescriptionText>
         </DetailContainer>
-        <MediaContainer>
-          <MediaImage
-            source={{ uri: postImage }}
-            style={{ width: 300, height: 200 }}
-          />
-        </MediaContainer>
+
+        {postImage ? (
+          <MediaContainer>
+            <MediaImage
+              source={{ uri: postImage }}
+              style={{ width: 300, height: 200 }}
+            />
+          </MediaContainer>
+        ) : (
+          <View></View>
+        )}
+
         <ActionContainer>
           <View style={{ alignItems: "center", justifyContent: "center" }}>
             <Text
@@ -203,11 +257,15 @@ export const ViewPost = () => {
             </Text>
           </View>
           <View style={{ flexDirection: "row" }}>
-            <IconContainer>
-              <Icon name="Heart" size={24} color={colors.text} />
+            <IconContainer onPress={() => onToggleLikePost()}>
+              <Icon
+                name={localLiked ? "HeartFull" : "Heart"}
+                size={24}
+                color={localLiked ? "#ED6A5A" : colors.text}
+              />
               <IconLabel>{likeCount}</IconLabel>
             </IconContainer>
-            <IconContainer>
+            <IconContainer disabled>
               <Icon name="Bubble" size={24} color={colors.text} />
               <IconLabel>{commentCount}</IconLabel>
             </IconContainer>
@@ -224,15 +282,25 @@ export const ViewPost = () => {
           </View>
         </ActionContainer>
       </PostContainer>
-      <CommentContainer>
-        {comments.map((comment, index) => (
-          <PostItem
-            key={index.toString()}
-            item={comment}
-            comment={true}
-          ></PostItem>
-        ))}
-      </CommentContainer>
-    </Wrapper>
+      <FlatList
+        data={commentsData?.posts[0].comments}
+        renderItem={({ item }) => (
+          <CommentItem comment={item} userId={userId} />
+        )}
+        keyExtractor={(item) => {
+          return item.id;
+        }}
+        refreshing={loadingComments}
+        onRefresh={() => forceUpdate()}
+        onEndReached={() =>
+          fetchMoreComments({
+            variables: {
+              postId,
+              offset: commentsData?.posts[0].comments.length,
+            },
+          })
+        }
+      />
+    </>
   );
 };

@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { PostItem } from "./Home/PostItem";
 import { COMMENTS, POSTS } from "../mock";
 import styled from "styled-components";
@@ -7,6 +7,8 @@ import { Avatar } from "./Avatar";
 import moment from "moment";
 import { Icon } from "./Icon";
 import { useNavigation, useTheme } from "@react-navigation/native";
+import { useMutation } from "@apollo/client";
+import { SET_LIKEDUSER_COMMENT } from "../operations/mutations/comment";
 
 const PostContainer = styled.Pressable<{ profile: boolean }>`
   background: ${({ theme }) => theme.secondary};
@@ -75,19 +77,46 @@ const CareerText = styled.Text`
   color: ${({ theme }) => theme.text};
 `;
 
-export const Comment = () => {
+export const Comment = ({
+  id,
+  userUri,
+  username,
+  userhandle,
+  currentPosition,
+  createdAt,
+  content,
+  likedUsers,
+  alreadyLiked,
+  userId,
+}) => {
   const navigation = useNavigation();
   const colors = useTheme().colors;
 
-  const {
-    userUri,
-    username,
-    userhandle,
-    currentPosition,
-    createdAt,
-    content,
-    likeCount,
-  } = COMMENTS[0];
+  const likeCountInit = likedUsers?.length || 0;
+  const [likeCount, setLikeCount] = useState(likeCountInit);
+
+  const [localLiked, setLocalLiked] = useState(alreadyLiked);
+
+  const [setLikedUserComment, { error, data }] = useMutation(
+    SET_LIKEDUSER_COMMENT
+  );
+
+  // database data alittle bit raw that's why alot of checks
+  const onToggleLikeComment = () => {
+    setLocalLiked(!localLiked);
+    if (!localLiked) {
+      setLikeCount(likeCount + 1);
+      setLikedUserComment({
+        variables: { commentId: id, userIds: [...(likedUsers || []), userId] },
+      });
+    } else {
+      setLikeCount(likeCount - 1);
+      const userIds = likedUsers?.filter((id) => id !== userId);
+      setLikedUserComment({
+        variables: { commentId: id, userIds: userIds || [] },
+      });
+    }
+  };
 
   return (
     <PostContainer>
@@ -101,13 +130,16 @@ export const Comment = () => {
         <TouchableOpacity style={{ marginTop: 5 }}>
           <Avatar imageUri={userUri} size={60}></Avatar>
         </TouchableOpacity>
-        <IconContainer>
-          <Icon name="Heart" size={24} color={colors.text} />
+        <IconContainer onPress={() => onToggleLikeComment()}>
+          <Icon
+            name={localLiked ? "HeartFull" : "Heart"}
+            size={24}
+            color={localLiked ? "#ED6A5A" : colors.text}
+          />
           <IconLabel>{likeCount}</IconLabel>
         </IconContainer>
       </View>
       <RightContainer>
-        <View></View>
         <HeaderRow>
           <HeaderItem>
             <TouchableOpacity
@@ -119,6 +151,8 @@ export const Comment = () => {
             >
               <UserText>{username}</UserText>
               <HandleText>@{userhandle}</HandleText>
+              <Icon name="Dot" size={18} color="grey" />
+              <TimeText>{moment(createdAt).fromNow()} </TimeText>
             </TouchableOpacity>
             <TouchableOpacity>
               <Icon name="Dots" color={colors.text}></Icon>
@@ -126,9 +160,6 @@ export const Comment = () => {
           </HeaderItem>
           <HeaderItem>
             <CareerText>{currentPosition}</CareerText>
-          </HeaderItem>
-          <HeaderItem>
-            <TimeText>{moment(createdAt).fromNow()}</TimeText>
           </HeaderItem>
         </HeaderRow>
         <ContentContainer>

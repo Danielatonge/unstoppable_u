@@ -5,13 +5,16 @@ import {
   KeyboardAvoidingView,
   Platform,
   TextInput,
+  FlatList,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { Comment } from "../../components/Comment";
 import styled from "styled-components";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 import { Icon } from "../../components/Icon";
+import { useQuery } from "@apollo/client";
+import { GET_COMMENTS } from "../../operations/queries/comment";
 
 const Container = styled.View`
   flex: 1;
@@ -40,9 +43,22 @@ const TextBar = styled.TextInput`
   color: #555;
 `;
 
-export const Comments = () => {
+export const Comments = ({ route }) => {
+  const { postId, userId } = route.params;
   const [comment, setComment] = useState("");
   const insets = useSafeAreaInsets();
+  const [_, forceUpdate] = useReducer((x) => x + 1, 0);
+
+  console.log({ postId, userId });
+
+  const {
+    data: commentsData,
+    loading: loadingComments,
+    fetchMore: fetchMoreComments,
+  } = useQuery(GET_COMMENTS, {
+    variables: { postId: postId },
+    fetchPolicy: "network-only",
+  });
 
   const { colors } = useTheme();
   const onSubmit = () => {
@@ -50,12 +66,31 @@ export const Comments = () => {
     setComment("");
     // Send the request to the backend
   };
+
   return (
     <Container>
-      <ScrollView style={{ padding: 15 }}>
-        <Comment />
-        <Comment />
-      </ScrollView>
+      <FlatList
+        style={{ padding: 15 }}
+        data={commentsData?.posts[0].comments}
+        renderItem={({ item }) => (
+          <CommentItem comment={item} userId={userId} />
+        )}
+        keyExtractor={(item) => {
+          return item.id;
+        }}
+        refreshing={loadingComments}
+        onRefresh={() => forceUpdate()}
+        onEndReached={() =>
+          fetchMoreComments({
+            variables: {
+              postId,
+              offset: commentsData?.posts[0].comments.length,
+            },
+          })
+        }
+        onEndReachedThreshold={0.2}
+        removeClippedSubviews
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "position" : "height"}
         keyboardVerticalOffset={insets.bottom + 5}
@@ -87,5 +122,25 @@ export const Comments = () => {
         </InputContainer>
       </KeyboardAvoidingView>
     </Container>
+  );
+};
+
+export const CommentItem = ({ comment, userId }) => {
+  const alreadyLiked = comment.likedUsers
+    ? comment.likedUsers?.includes(userId)
+    : false;
+  return (
+    <Comment
+      id={comment.id}
+      userUri={comment.user?.userImage}
+      username={comment.user?.fullName}
+      userhandle={comment.user?.userHandle}
+      currentPosition={comment.user?.currentPosition}
+      createdAt={comment.createdAt}
+      content={comment.content}
+      likedUsers={comment.likedUsers}
+      alreadyLiked={alreadyLiked}
+      userId={userId}
+    />
   );
 };
