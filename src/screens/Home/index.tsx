@@ -69,7 +69,10 @@ export const Home = () => {
           loading ? (
             <ActivityIndicator></ActivityIndicator>
           ) : (
-            <UserAvatar imageUri={fetchedUsers?.users[0].userImage} userId={fetchedUsers?.users[0].id} />
+            <UserAvatar
+              imageUri={fetchedUsers?.users[0].userImage}
+              userId={fetchedUsers?.users[0].id}
+            />
           )
         }
         rightComponent={<Settings />}
@@ -96,7 +99,12 @@ export const Home = () => {
       />
       <NewPostButton
         activeOpacity={0.8}
-        onPress={() => navigation.navigate("ComposePost")}
+        onPress={() =>
+          navigation.navigate("ComposePost", {
+            userId: fetchedUsers?.users[0].id,
+            userImage: fetchedUsers?.users[0].userImage,
+          })
+        }
       >
         <Icon name="Plus" size={35} />
       </NewPostButton>

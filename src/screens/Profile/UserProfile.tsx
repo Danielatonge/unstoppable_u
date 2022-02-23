@@ -124,7 +124,14 @@ export const UserProfile = ({ route }) => {
         <UserRow>
           <View></View>
           {isLoggedInUserProfile ? (
-            <NewPostButton onPress={() => navigation.navigate("ComposePost")}>
+            <NewPostButton
+              onPress={() =>
+                navigation.navigate("ComposePost", {
+                  userId: userId,
+                  userImage: user?.userImage,
+                })
+              }
+            >
               <NewPostText>New post</NewPostText>
             </NewPostButton>
           ) : (

@@ -208,7 +208,7 @@ export const PostCard = ({
               }
             >
               <UserText>{userName}</UserText>
-              <HandleText>@{userHandle}</HandleText>
+              {/* <HandleText>@{userHandle}</HandleText> */}
               <Icon name="Dot" size={18} color="grey" />
               <TimeText>{moment(timestamp).fromNow()}</TimeText>
             </TouchableOpacity>

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ImageBackground,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import React, { ReactNode } from "react";
 import styled from "styled-components";
@@ -66,7 +67,7 @@ const ComposeButton = styled.TouchableOpacity<{ isAndroid: boolean }>`
 `;
 
 const ComposeText = styled.Text`
-  color: ${({ theme }) => 'white' || theme.text};
+  color: ${({ theme }) => "white" || theme.text};
   font-weight: bold;
 `;
 
@@ -75,6 +76,7 @@ interface Props {
   backgroundImageUri?: string;
   backAction?(): void;
   create?(): void;
+  loadingCreatePostBtn?: boolean;
 }
 
 export const ProfileHeader = ({
@@ -82,6 +84,7 @@ export const ProfileHeader = ({
   backgroundImageUri = PROFILE_BANNER_URL,
   backAction,
   create,
+  loadingCreatePostBtn,
 }: Props) => {
   const scheme = useColorScheme();
   const { theme } = getColorScheme("AUTOMATIC", scheme);
@@ -115,14 +118,16 @@ export const ProfileHeader = ({
         />
       </BackButton>
 
-      <SectionContainer
-        style={{ alignItems: "center" }}
-      >
+      <SectionContainer style={{ alignItems: "center" }}>
         <Title>{profileMotivation}</Title>
       </SectionContainer>
       {create && (
         <ComposeButton isAndroid={isAndroid} onPress={create}>
-          <ComposeText>Create</ComposeText>
+          {loadingCreatePostBtn ? (
+            <ActivityIndicator></ActivityIndicator>
+          ) : (
+            <ComposeText>Create</ComposeText>
+          )}
         </ComposeButton>
       )}
     </Container>

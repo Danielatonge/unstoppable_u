@@ -20,6 +20,9 @@ import { PostItem } from "../components/Home/PostItem";
 import * as ImagePicker from "expo-image-picker";
 import { ProfileHeader } from "../components/Profile/ProfileHeader";
 import { ComposeAction } from "../components/ComposeAction";
+import { CREATE_POST } from "../operations/mutations/post";
+import { useMutation } from "@apollo/client";
+import { GET_RECENT_POST } from "../operations/queries/post";
 
 const Wrapper = styled.View<{ profile: boolean }>`
   background: ${({ theme }) => theme.secondary};
@@ -104,7 +107,8 @@ const BackButton = styled.TouchableOpacity`
   opacity: 1;
 `;
 
-export const ComposePost = () => {
+export const ComposePost = ({ route }) => {
+  const { userId, userImage } = route.params;
   const navigation = useNavigation();
 
   const scheme = useColorScheme();
@@ -112,9 +116,7 @@ export const ComposePost = () => {
   const colors = theme.colors;
   const isAndroid = Platform.OS === "android";
 
-  const item = POSTS[0];
-  const id = item.id;
-  const avatar = item.user.imageUri;
+  const avatar = userImage;
 
   const [addDesc, setAddDesc] = useState(false);
   const [selectImg, setSelectImg] = useState(false);
@@ -134,6 +136,7 @@ export const ComposePost = () => {
     });
 
     console.log("Result: ", result);
+    console.log(userId);
 
     if (!result.cancelled) {
       setImage(result.uri);
@@ -143,17 +146,39 @@ export const ComposePost = () => {
       setSelectImg(false);
     }
   };
+  const [createUserPost, { loading: loadingCreatePost, data: data3 }] = useMutation(
+    CREATE_POST,
+    {
+      onCompleted: () => navigation.goBack(),
+      refetchQueries: [GET_RECENT_POST],
+    }
+  );
 
   const createPost = () => {
-    if (!caption) return;
-    console.log("CAPTION:", caption);
-    console.log("Description:", detailed);
-    console.log("Links:", link);
-    console.log("\n");
+    if (caption) {
+      createUserPost({
+        variables: {
+          content: caption,
+          extraContent: detailed,
+          links: link,
+          userId: userId,
+        },
+      });
+      console.log("CAPTION:", caption);
+      console.log("Description:", detailed);
+      console.log(userId);
+      onChangeCaption("");
+      onChangeDetailed("");
+      setImage(null);
+      onChangeLink("");
+    }
   };
   return (
     <Wrapper>
-      <ProfileHeader create={createPost}></ProfileHeader>
+      <ProfileHeader
+        create={createPost}
+        loadingCreatePostBtn={loadingCreatePost}
+      ></ProfileHeader>
       <Avatar
         imageUri={avatar}
         size={60}

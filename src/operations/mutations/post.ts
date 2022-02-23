@@ -56,3 +56,29 @@ export const REMOVE_BOOKMARK_POST = gql`
     }
   }
 `;
+
+export const CREATE_POST = gql`
+  mutation createUserPost(
+    $content: String
+    $extraContent: String
+    $links: String
+    $userId: ID!
+  ) {
+    createPosts(
+      input: [
+        {
+          content: $content
+          extraContent: $extraContent
+          links: $links
+          user: { connect: { where: { node: { id: $userId } } } }
+        }
+      ]
+    ) {
+      posts {
+        id
+        content
+        createdAt
+      }
+    }
+  }
+`;
