@@ -44,6 +44,20 @@ export const Settings = () => {
           ]);
         },
       },
+      {
+        title: "Workplace",
+        thumbIcon: "Grid",
+        thumbColor: "#4db3ff",
+        disabled: false,
+        action: () => {
+          Alert.alert("Link to your workplace", "Coming Soon.", [
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+          ]);
+        },
+      },
     ],
     [
       {

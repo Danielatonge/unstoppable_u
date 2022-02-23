@@ -14,7 +14,11 @@ import { Avatar } from "../Avatar";
 import { Icon } from "../Icon";
 import moment from "moment";
 import { useNavigation } from "@react-navigation/native";
-import { SET_LIKEDUSER_POST } from "../../operations/mutations/post";
+import {
+  REMOVE_BOOKMARK_POST,
+  SET_BOOKMARK_POST,
+  SET_LIKEDUSER_POST,
+} from "../../operations/mutations/post";
 import { useMutation } from "@apollo/client";
 
 const PostContainer = styled.Pressable<{ profile: boolean }>`
@@ -96,10 +100,12 @@ interface PostProps {
   commentCount: number;
   timestamp: string;
   alreadyLiked: boolean;
+  alreadyBookmarked: boolean;
   profile?: boolean;
   bookmark?: boolean;
   comment?: boolean;
   userId: string;
+  postUserId: string;
 }
 
 export const PostCard = ({
@@ -112,10 +118,12 @@ export const PostCard = ({
   commentCount,
   timestamp,
   alreadyLiked,
+  alreadyBookmarked,
   profile,
   bookmark,
   comment,
   userId,
+  postUserId,
 }: PostProps) => {
   const scheme = useColorScheme();
   const { theme } = getColorScheme("AUTOMATIC", scheme);
@@ -126,7 +134,12 @@ export const PostCard = ({
   const [likeCount, setLikeCount] = useState(likeCountInit);
   const [localLiked, setLocalLiked] = useState(alreadyLiked);
 
-  const [setLikedUserPost, { error, data }] = useMutation(SET_LIKEDUSER_POST);
+  const [setLikedUserPost, { error: error1, data: data1 }] =
+    useMutation(SET_LIKEDUSER_POST);
+  const [setBookmarkPost, { error: error2, data: data2 }] =
+    useMutation(SET_BOOKMARK_POST);
+  const [removeBookmarkPost, { error: error3, data: data3 }] =
+    useMutation(REMOVE_BOOKMARK_POST);
 
   // database data alittle bit raw that's why alot of checks
   const onToggleLikePost = () => {
@@ -144,11 +157,36 @@ export const PostCard = ({
       });
     }
   };
+  const [localBookmarked, setLocalBookmarked] = useState(alreadyBookmarked);
+  const onToggleBookmarkPost = () => {
+    setLocalBookmarked(!localBookmarked);
+    if (!localBookmarked) {
+      setBookmarkPost({
+        variables: {
+          postId: id,
+          userId: userId,
+        },
+      });
+    } else {
+      removeBookmarkPost({
+        variables: {
+          postId: id,
+          userId: userId,
+        },
+      });
+    }
+  };
 
   const Comment = comment ? (
     <View></View>
   ) : (
-    <Bookmark bookmark={bookmark} colors={colors} />
+    <TouchableOpacity onPress={() => onToggleBookmarkPost()}>
+      <Icon
+        name={localBookmarked ? "Bookmarkminus" : "Bookmarkplus"}
+        size={24}
+        color={colors.text}
+      />
+    </TouchableOpacity>
   );
 
   return (
@@ -165,7 +203,9 @@ export const PostCard = ({
           <HeaderInfo>
             <TouchableOpacity
               style={{ flexDirection: "row", alignSelf: "center" }}
-              onPress={() => navigation.navigate("UserProfile")}
+              onPress={() =>
+                navigation.navigate("UserProfile", { userId: postUserId })
+              }
             >
               <UserText>{userName}</UserText>
               <HandleText>@{userHandle}</HandleText>
@@ -226,14 +266,3 @@ export const PostCard = ({
     </PostContainer>
   );
 };
-
-const Bookmark = ({ bookmark, colors }) =>
-  bookmark ? (
-    <TouchableOpacity>
-      <Icon name="Bookmarkminus" size={24} color={colors.text} />
-    </TouchableOpacity>
-  ) : (
-    <TouchableOpacity>
-      <Icon name="Bookmarkplus" size={24} color={colors.text} />
-    </TouchableOpacity>
-  );

@@ -11,7 +11,7 @@ import { AppLoader } from "./src/AppLoader";
 import { useApolloClient } from "./src/hooks/useApolloClient";
 
 if (__DEV__) {
-  import("./ReactotronConfig").then(() => console.log("Reactotron Configured"));
+  import("./ReactotronConfig");
 }
 
 export default function App() {

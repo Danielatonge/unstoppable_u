@@ -33,7 +33,6 @@ export const FIND_COMPLETE_USER_GIVEN_ID = gql`
       email
       currentPosition
       goal
-      tags
       address
       city
       state

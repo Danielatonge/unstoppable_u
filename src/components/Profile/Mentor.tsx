@@ -4,7 +4,7 @@ import { MENTORS } from "../../mock";
 import { MentorItem } from "../Search/MentorItem";
 import { stall } from "../../helpers";
 
-export const Mentor = () => {
+export const Mentor = ({userId}) => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
 

@@ -15,7 +15,15 @@ export const PostItem = ({
   comment,
   userId,
 }: Prop) => {
-  const alreadyLiked = item.likedUsers? item.likedUsers?.includes(userId) : false;
+  const bookmarkedUsers = item.bookmarkedUsers
+    ? item.bookmarkedUsers.map(({ id }) => id)
+    : [];
+  const alreadyLiked = item.likedUsers
+    ? item.likedUsers?.includes(userId)
+    : false;
+  const alreadyBookmarked = item.bookmarkedUsers
+    ? bookmarkedUsers.includes(userId)
+    : false;
   return (
     <PostCard
       id={item.id}
@@ -29,9 +37,11 @@ export const PostItem = ({
       commentCount={item.commentCount}
       timestamp={item.createdAt}
       alreadyLiked={alreadyLiked}
+      alreadyBookmarked={alreadyBookmarked}
       profile={profile}
       bookmark={bookmark}
       comment={comment}
+      postUserId={item.user?.id}
       userId={userId}
     ></PostCard>
   );

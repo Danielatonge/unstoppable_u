@@ -9,14 +9,15 @@ export interface Props {
   size?: number;
   withBorder?: boolean;
   style?: object;
+  userId: string;
 }
 
-export const UserAvatar = ({ imageUri, size, withBorder, style }: Props) => {
+export const UserAvatar = ({ imageUri, size, withBorder, style, userId }: Props) => {
   const navigation = useNavigation();
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate("UserProfile");
+        navigation.navigate("UserProfile", {userId: userId});
       }}
     >
       <Avatar

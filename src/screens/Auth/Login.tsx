@@ -80,6 +80,8 @@ export const Login = () => {
   const [createUserMutation, { data: createdUserData }] =
     useMutation(CREATE_USER);
 
+  const [authToken, setAuthToken] = useState("");
+
   const printAsyncStorageValues = async () => {
     try {
       const keys = await AsyncStorage.getAllKeys();
@@ -98,6 +100,7 @@ export const Login = () => {
       try {
         const value = await AsyncStorage.getItem("@USER_AUTH_TOKEN");
         if (value !== null) {
+          setAuthToken(value);
           navigation.navigate("Main");
         }
       } catch (e) {
@@ -178,7 +181,6 @@ export const Login = () => {
     };
     authenticateUser();
   }, [result]);
-
   return (
     <Container
       contentContainerStyle={{
@@ -201,7 +203,7 @@ export const Login = () => {
           Sign in or create an account to show the world how awesome you are.{" "}
         </AboutText>
       </View>
-      {result && result.type === "success" ? (
+      {result && result.type === "success" && authToken ? (
         <View style={{ height: 60 }}>
           <ActivityIndicator />
         </View>

@@ -8,7 +8,7 @@ import { Bookmark } from "./Bookmark";
 
 const Profile = createMaterialTopTabNavigator();
 
-function ProfileTabs() {
+function ProfileTabs({ userId, isLoggedInUserProfile }) {
   const scheme = useColorScheme();
   const { theme } = getColorScheme("AUTOMATIC", scheme);
   const colors = theme.colors;
@@ -27,12 +27,37 @@ function ProfileTabs() {
         tabBarInactiveTintColor: colors.text,
       }}
     >
-      <Profile.Screen name="Track" component={Track} />
-      <Profile.Screen name="Mentors" component={Mentor} />
-      <Profile.Screen name="Bookmarks" component={Bookmark} />
+      <Profile.Screen
+        name="Track"
+        component={Track}
+        initialParams={{ userId: userId }}
+      />
+      <Profile.Screen
+        name="Mentors"
+        component={Mentor}
+        initialParams={{ userId: userId }}
+      />
+      {isLoggedInUserProfile && (
+        <Profile.Screen
+          name="Bookmarks"
+          component={Bookmark}
+          initialParams={{ userId: userId }}
+        />
+      )}
     </Profile.Navigator>
   );
 }
-export const UserTabView = () => {
-  return <ProfileTabs />;
+export const UserTabView = ({ userId, isLoggedInUserProfile }) => {
+  return (
+    <ProfileTabs
+      userId={userId}
+      isLoggedInUserProfile={isLoggedInUserProfile}
+    />
+  );
 };
+
+// nesting navigators
+// navigation.navigate("Account", {
+//   screen: "Settings",
+//   params: { user: "jane" },
+// });

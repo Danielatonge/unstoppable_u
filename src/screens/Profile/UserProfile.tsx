@@ -9,9 +9,9 @@ import { getColorScheme } from "../../helpers";
 import { UserTabView } from "../../components/Profile/UserTabView";
 import { useNavigation } from "@react-navigation/native";
 import { FIND_COMPLETE_USER_GIVEN_ID } from "../../operations/queries/user";
-import { useLazyQuery } from "@apollo/client";
-import { useDecodedToken } from "../../hooks/useDecodedToken";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import moment from "moment";
+import { useDecodedToken } from "../../hooks/useDecodedToken";
 
 const Container = styled.View`
   padding: 0 10px;
@@ -20,6 +20,7 @@ const Container = styled.View`
 const UserRow = styled.View`
   flex-direction: row;
   justify-content: space-between;
+  min-height: 40px;
 `;
 
 const NewPostButton = styled.TouchableOpacity`
@@ -75,29 +76,26 @@ const ConnectText = styled.Text`
   color: ${({ theme }) => theme.text};
 `;
 
-export const UserProfile = () => {
+export const UserProfile = ({ route }) => {
+  const { userId } = route.params;
   const scheme = useColorScheme();
   const { theme } = getColorScheme("AUTOMATIC", scheme);
   const colors = theme.colors;
   const navigation = useNavigation();
 
   const decodedToken = useDecodedToken();
-  const [
-    getCompleteUserGivenId,
-    { data: fetchedUsers, error: errorFetchingUser, loading },
-  ] = useLazyQuery(FIND_COMPLETE_USER_GIVEN_ID, { fetchPolicy: "cache-first" });
+  const isLoggedInUserProfile = decodedToken?.sub === userId;
 
-  useEffect(() => {
-    const getAuthToken = async () => {
-      try {
-        getCompleteUserGivenId({ variables: { id: decodedToken?.sub } });
-      } catch (e) {
-        console.error(e);
-      }
-    };
-    getAuthToken();
-  }, [decodedToken]);
+  const {
+    data: fetchedUsers,
+    error: errorFetchingUser,
+    loading,
+  } = useQuery(FIND_COMPLETE_USER_GIVEN_ID, {
+    variables: { id: userId },
+    fetchPolicy: "cache-first",
+  });
 
+  console.log({ fetchedUsers, userId });
   if (loading) {
     return <ActivityIndicator></ActivityIndicator>;
   }
@@ -125,9 +123,13 @@ export const UserProfile = () => {
         />
         <UserRow>
           <View></View>
-          <NewPostButton onPress={() => navigation.navigate("ComposePost")}>
-            <NewPostText>New post</NewPostText>
-          </NewPostButton>
+          {isLoggedInUserProfile ? (
+            <NewPostButton onPress={() => navigation.navigate("ComposePost")}>
+              <NewPostText>New post</NewPostText>
+            </NewPostButton>
+          ) : (
+            <View></View>
+          )}
         </UserRow>
         <SectionBio>
           <UserText>{user?.fullName || ""}</UserText>
@@ -171,7 +173,10 @@ export const UserProfile = () => {
           </Statistics>
         </SectionBio>
       </Container>
-      <UserTabView />
+      <UserTabView
+        userId={userId}
+        isLoggedInUserProfile={isLoggedInUserProfile}
+      />
     </>
   );
 };

@@ -1,36 +1,65 @@
 import { View, Text, FlatList } from "react-native";
-import React, { useEffect, useState } from "react";
-import { PostCard } from "../Home/PostCard";
-import { POSTS } from "../../mock";
+import React, { useEffect, useReducer, useState } from "react";
 import { PostItem } from "../Home/PostItem";
-import { stall } from "../../helpers";
+import { useQuery } from "@apollo/client";
+import { GET_POSTS_GIVEN_USERID } from "../../operations/queries/post";
 
-export const Track = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
+export const Track = ({ route }) => {
+  const { userId } = route.params;
+  const [_, forceUpdate] = useReducer((x) => x + 1, 0);
+  const {
+    data: postsData,
+    loading: loadingPosts,
+    fetchMore: fetchMorePosts,
+  } = useQuery(GET_POSTS_GIVEN_USERID, {
+    variables: { userId: userId, offset: 0 },
+    fetchPolicy: "network-only",
+  });
 
-  const fetchPosts = async () => {
-    setLoading(true);
-    try {
-      await stall(500).then(() => setPosts(POSTS));
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
+  const userObject = {
+    userImage: postsData?.users[0].userImage,
+    fullName: postsData?.users[0].fullName,
+    userName: postsData?.users[0].userName,
+    id: postsData?.users[0].id,
   };
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
   return (
     <FlatList
-      data={posts}
-      renderItem={({ item }) => <PostItem item={item} profile={true} />}
-      keyExtractor={(item) => item.id}
-      refreshing={loading}
-      onRefresh={fetchPosts}
-      contentContainerStyle={{ overflow: "hidden" }}
+      data={postsData?.users[0].posts}
+      renderItem={({ item }) => (
+        <PostTrackItem
+          userObject={userObject}
+          item={item}
+          userId={userId}
+          profile={true}
+          bookmark={false}
+        />
+      )}
+      keyExtractor={(item) => {
+        return item.id;
+      }}
+      refreshing={loadingPosts}
+      onRefresh={() => forceUpdate()}
+      onEndReached={() =>
+        fetchMorePosts({
+          variables: { offset: postsData?.users[0].posts.length },
+        })
+      }
+      contentContainerStyle={{ overflow: true }}
+    />
+  );
+};
+
+const PostTrackItem = ({ item, userId, profile, bookmark, userObject }) => {
+  const trackItem = {
+    ...item,
+    user: userObject,
+  };
+  return (
+    <PostItem
+      item={trackItem}
+      userId={userId}
+      profile={profile}
+      bookmark={bookmark}
     />
   );
 };

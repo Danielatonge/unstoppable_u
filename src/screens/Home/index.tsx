@@ -39,7 +39,7 @@ export const Home = () => {
   const [
     getCompleteUserGivenId,
     { data: fetchedUsers, error: errorFetchingUser, loading },
-  ] = useLazyQuery(FIND_USER_GIVEN_ID, { fetchPolicy: "cache-first" });
+  ] = useLazyQuery(FIND_USER_GIVEN_ID, { fetchPolicy: "network-only" });
 
   const decodedToken = useDecodedToken();
   //used to re-render the component
@@ -69,12 +69,12 @@ export const Home = () => {
           loading ? (
             <ActivityIndicator></ActivityIndicator>
           ) : (
-            <UserAvatar imageUri={fetchedUsers?.users[0].userImage} />
+            <UserAvatar imageUri={fetchedUsers?.users[0].userImage} userId={fetchedUsers?.users[0].id} />
           )
         }
         rightComponent={<Settings />}
       ></MainHeader>
-      <Text> {!loadingPosts && postsData?.posts.length}</Text>
+      {/* <Text> {!loadingPosts && postsData?.posts.length}</Text> */}
       <FlatList
         data={postsData?.posts}
         renderItem={({ item }) => (
