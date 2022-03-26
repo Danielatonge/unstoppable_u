@@ -19,7 +19,11 @@ import { getColorScheme } from "../helpers";
 import { PostItem } from "../components/Home/PostItem";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { GET_POST_GIVEN_ID } from "../operations/queries/post";
-import { SET_LIKEDUSER_POST } from "../operations/mutations/post";
+import {
+  REMOVE_BOOKMARK_POST,
+  SET_BOOKMARK_POST,
+  SET_LIKEDUSER_POST,
+} from "../operations/mutations/post";
 import { CommentItem } from "./Comments";
 import { GET_COMMENTS } from "../operations/queries/comment";
 
@@ -145,28 +149,49 @@ export const ViewPost = ({ route }) => {
     fetchMore: fetchMoreComments,
   } = useQuery(GET_COMMENTS, {
     variables: { postId: postId },
-    fetchPolicy: "cache-first",
+    fetchPolicy: "network-only",
   });
 
   // console.log({ postId, userId, postData });
-  const id = postData?.posts[0].id;
-  const avatar = postData?.posts[0].user?.userImage;
-  const userName = postData?.posts[0].user?.fullName;
-  const userHandle = postData?.posts[0].user?.userName;
-  const userCurrentPosition = postData?.posts[0].user?.currentPosition;
-  const caption = postData?.posts[0].content;
-  const detailed = postData?.posts[0].extraContent;
-  const postImage = postData?.posts[0]?.image;
-  const likedUsers = postData?.posts[0].likedUsers;
-  const commentCount = postData?.posts[0].commentCount;
-  const timestamp = postData?.posts[0].createdAt;
-  const bookmark = false;
+  const [completePost, setCompletePost] = useState(null);
+  const [likeCount, setLikeCount] = useState(0);
+  const [localLiked, setLocalLiked] = useState(false);
+  const [localBookmarked, setLocalBookmarked] = useState(false);
+  useEffect(() => {
+    setCompletePost({
+      id: postData?.posts[0].id,
+      avatar: postData?.posts[0].user?.userImage,
+      postUserId: postData?.posts[0].user?.id,
+      userName: postData?.posts[0].user?.fullName,
+      userHandle: postData?.posts[0].user?.userName,
+      userCurrentPosition: postData?.posts[0].user?.currentPosition,
+      caption: postData?.posts[0].content,
+      detailed: postData?.posts[0].extraContent,
+      postImage: postData?.posts[0]?.image,
+      likedUsers: postData?.posts[0].likedUsers,
+      commentCount: postData?.posts[0].commentCount,
+      timestamp: postData?.posts[0].createdAt,
+      bookmarked: postData?.posts[0].bookmarkedUsers,
+    });
+    setLikeCount(postData?.posts[0].likedUsers?.length);
+    setLocalLiked(
+      postData?.posts[0].likedUsers
+        ? postData?.posts[0].likedUsers?.includes(userId)
+        : false
+    );
+    const bookmarkedUsers = postData?.posts[0].bookmarkedUsers
+      ? postData?.posts[0].bookmarkedUsers.map(({ id }) => id)
+      : [];
+    setLocalBookmarked(
+      postData?.posts[0].bookmarkedUsers
+        ? bookmarkedUsers.includes(userId)
+        : false
+    );
+  }, [loadingPost]);
 
-  const likeCountInit = likedUsers?.length || 0;
-  const alreadyLiked = likedUsers ? likedUsers?.includes(userId) : false;
-  const [localLiked, setLocalLiked] = useState(alreadyLiked);
+  console.log(completePost?.likedUsers);
+
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
-  const [likeCount, setLikeCount] = useState(likeCountInit);
 
   const [setLikedUserPost, { error, data }] = useMutation(SET_LIKEDUSER_POST);
 
@@ -175,13 +200,16 @@ export const ViewPost = ({ route }) => {
     if (!localLiked) {
       setLikeCount(likeCount + 1);
       setLikedUserPost({
-        variables: { postId: id, userIds: [...(likedUsers || []), userId] },
+        variables: {
+          postId: completePost?.id,
+          userIds: [...(completePost?.likedUsers || []), userId],
+        },
       });
     } else {
       setLikeCount(likeCount - 1);
-      const userIds = likedUsers?.filter((id) => id !== userId);
+      const userIds = completePost?.likedUsers?.filter((id) => id !== userId);
       setLikedUserPost({
-        variables: { postId: id, userIds: userIds || [] },
+        variables: { postId: completePost?.id, userIds: userIds || [] },
       });
     }
   };
@@ -190,16 +218,32 @@ export const ViewPost = ({ route }) => {
   const { theme } = getColorScheme("AUTOMATIC", scheme);
   const colors = theme.colors;
 
-  const comments = POSTS;
+  const [setBookmarkPost, { error: error2, data: data2 }] =
+    useMutation(SET_BOOKMARK_POST);
+  const [removeBookmarkPost, { error: error3, data: data3 }] =
+    useMutation(REMOVE_BOOKMARK_POST);
 
-  const [newPost, setNewPost] = useState([]);
-
-  useEffect(() => {
-    console.log(newPost);
-  }, [newPost]);
+  const onToggleBookmarkPost = () => {
+    setLocalBookmarked(!localBookmarked);
+    if (!localBookmarked) {
+      setBookmarkPost({
+        variables: {
+          postId: completePost?.id,
+          userId: userId,
+        },
+      });
+    } else {
+      removeBookmarkPost({
+        variables: {
+          postId: completePost?.id,
+          userId: userId,
+        },
+      });
+    }
+  };
 
   if (loadingPost || loadingComments) {
-    <ActivityIndicator></ActivityIndicator>;
+    return <ActivityIndicator></ActivityIndicator>;
   }
 
   return (
@@ -207,40 +251,45 @@ export const ViewPost = ({ route }) => {
       <PostContainer>
         <Row>
           <View style={{ alignItems: "center", justifyContent: "center" }}>
-            <Avatar imageUri={avatar} size={60}></Avatar>
+            <Avatar imageUri={completePost?.avatar} size={60}></Avatar>
           </View>
           <HeaderRow>
             <HeaderItem>
               <TouchableOpacity
                 style={{ flexDirection: "row" }}
-                onPress={() => navigation.navigate("UserProfile")}
+                onPress={() =>
+                  navigation.navigate("UserProfile", {
+                    postId: completePost?.id,
+                    userId: completePost?.postUserId,
+                  })
+                }
               >
-                <UserText>{userName}</UserText>
-                <HandleText>@{userHandle}</HandleText>
+                <UserText>{completePost?.userName}</UserText>
+                {/* <HandleText>@{completePost?.userHandle}</HandleText> */}
                 <Icon name="Dot" size={18} color="grey" />
-                <TimeText>{moment(timestamp).fromNow()}</TimeText>
+                <TimeText>{moment(completePost?.timestamp).fromNow()}</TimeText>
               </TouchableOpacity>
               <TouchableOpacity>
                 <Icon name="Dots" color={colors.text}></Icon>
               </TouchableOpacity>
             </HeaderItem>
             <HeaderItem>
-              <CareerText>{userCurrentPosition}</CareerText>
+              <CareerText>{completePost?.userCurrentPosition}</CareerText>
             </HeaderItem>
           </HeaderRow>
         </Row>
 
         <CaptionContainer>
-          <CaptionText>{caption}</CaptionText>
+          <CaptionText>{completePost?.caption}</CaptionText>
         </CaptionContainer>
         <DetailContainer>
-          <DescriptionText>{detailed}</DescriptionText>
+          <DescriptionText>{completePost?.detailed}</DescriptionText>
         </DetailContainer>
 
-        {postImage ? (
+        {completePost?.postImage ? (
           <MediaContainer>
             <MediaImage
-              source={{ uri: postImage }}
+              source={{ uri: completePost?.postImage }}
               style={{ width: 300, height: 200 }}
             />
           </MediaContainer>
@@ -267,18 +316,16 @@ export const ViewPost = ({ route }) => {
             </IconContainer>
             <IconContainer disabled>
               <Icon name="Bubble" size={24} color={colors.text} />
-              <IconLabel>{commentCount}</IconLabel>
+              <IconLabel>{completePost?.commentCount}</IconLabel>
             </IconContainer>
 
-            {bookmark ? (
-              <TouchableOpacity>
-                <Icon name="Bookmarkminus" size={24} color={colors.text} />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity>
-                <Icon name="Bookmarkplus" size={24} color={colors.text} />
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity onPress={() => onToggleBookmarkPost()}>
+              <Icon
+                name={localBookmarked ? "Bookmarkminus" : "Bookmarkplus"}
+                size={24}
+                color={colors.text}
+              />
+            </TouchableOpacity>
           </View>
         </ActionContainer>
       </PostContainer>

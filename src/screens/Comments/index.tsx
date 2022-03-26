@@ -6,6 +6,7 @@ import {
   Platform,
   TextInput,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useReducer, useState } from "react";
 import { Comment } from "../../components/Comment";
@@ -13,8 +14,9 @@ import styled from "styled-components";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 import { Icon } from "../../components/Icon";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { GET_COMMENTS } from "../../operations/queries/comment";
+import { CREATE_COMMENT } from "../../operations/mutations/comment";
 
 const Container = styled.View`
   flex: 1;
@@ -49,6 +51,11 @@ export const Comments = ({ route }) => {
   const insets = useSafeAreaInsets();
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
+  const [createComment, { loading: creatingComment, data: data1 }] =
+    useMutation(CREATE_COMMENT, {
+      refetchQueries: [GET_COMMENTS],
+    });
+
   console.log({ postId, userId });
 
   const {
@@ -64,8 +71,16 @@ export const Comments = ({ route }) => {
   const onSubmit = () => {
     console.log("COMMENT: ", comment);
     setComment("");
+    createComment({
+      variables: {
+        postId,
+        userId,
+        content: comment,
+      },
+    });
     // Send the request to the backend
   };
+  console.log(creatingComment);
 
   return (
     <Container>
@@ -117,7 +132,11 @@ export const Comments = ({ route }) => {
             disabled={comment.length === 0}
             style={{ opacity: comment.length === 0 ? 0.2 : 1 }}
           >
-            <Icon name="Send" size={24} color={colors.text} />
+            {creatingComment ? (
+              <ActivityIndicator></ActivityIndicator>
+            ) : (
+              <Icon name="Send" size={24} color={colors.text} />
+            )}
           </SendIconContainer>
         </InputContainer>
       </KeyboardAvoidingView>
@@ -132,6 +151,7 @@ export const CommentItem = ({ comment, userId }) => {
   return (
     <Comment
       id={comment.id}
+      commentUserId={comment.user?.id}
       userUri={comment.user?.userImage}
       username={comment.user?.fullName}
       userhandle={comment.user?.userHandle}

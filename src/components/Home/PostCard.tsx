@@ -20,6 +20,7 @@ import {
   SET_LIKEDUSER_POST,
 } from "../../operations/mutations/post";
 import { useMutation } from "@apollo/client";
+import { GET_BOOKMARKED_POSTS_GIVEN_USERID } from "../../operations/queries/post";
 
 const PostContainer = styled.Pressable<{ profile: boolean }>`
   padding: ${SCREEN_PADDING}px;
@@ -138,8 +139,12 @@ export const PostCard = ({
     useMutation(SET_LIKEDUSER_POST);
   const [setBookmarkPost, { error: error2, data: data2 }] =
     useMutation(SET_BOOKMARK_POST);
-  const [removeBookmarkPost, { error: error3, data: data3 }] =
-    useMutation(REMOVE_BOOKMARK_POST);
+  const [removeBookmarkPost, { error: error3, data: data3 }] = useMutation(
+    REMOVE_BOOKMARK_POST,
+    {
+      refetchQueries: [GET_BOOKMARKED_POSTS_GIVEN_USERID],
+    }
+  );
 
   // database data alittle bit raw that's why alot of checks
   const onToggleLikePost = () => {

@@ -51,7 +51,6 @@ const HeaderItem = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  flex: 1;
 `;
 
 const UserText = styled.Text`
@@ -69,7 +68,6 @@ const TimeText = styled.Text`
 
 const HeaderRow = styled.View`
   flex-direction: column;
-  flex: 1;
 `;
 
 const CareerText = styled.Text`
@@ -88,6 +86,7 @@ export const Comment = ({
   likedUsers,
   alreadyLiked,
   userId,
+  commentUserId,
 }) => {
   const navigation = useNavigation();
   const colors = useTheme().colors;
@@ -146,11 +145,11 @@ export const Comment = ({
               style={{ flexDirection: "row" }}
               onPress={() => {
                 navigation.goBack();
-                navigation.navigate("UserProfile");
+                navigation.navigate("UserProfile", { userId: commentUserId });
               }}
             >
               <UserText>{username}</UserText>
-              <HandleText>@{userhandle}</HandleText>
+              {/* <HandleText>@{userhandle}</HandleText> */}
               <Icon name="Dot" size={18} color="grey" />
               <TimeText>{moment(createdAt).fromNow()} </TimeText>
             </TouchableOpacity>
@@ -158,9 +157,11 @@ export const Comment = ({
               <Icon name="Dots" color={colors.text}></Icon>
             </TouchableOpacity>
           </HeaderItem>
-          <HeaderItem>
-            <CareerText>{currentPosition}</CareerText>
-          </HeaderItem>
+          {currentPosition && (
+            <HeaderItem>
+              <CareerText>{currentPosition}</CareerText>
+            </HeaderItem>
+          )}
         </HeaderRow>
         <ContentContainer>
           <DescriptionText>{content}</DescriptionText>

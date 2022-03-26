@@ -9,6 +9,8 @@ import useColorScheme from "./src/hooks/useColorScheme";
 import { LoginStack, RootStack, TabsStack } from "./src/navigation";
 import { AppLoader } from "./src/AppLoader";
 import { useApolloClient } from "./src/hooks/useApolloClient";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 if (__DEV__) {
   import("./ReactotronConfig");
@@ -19,7 +21,23 @@ export default function App() {
   const colorScheme = useColorScheme();
   const { theme, statusBarStyle } = getColorScheme("AUTOMATIC", colorScheme);
   const { client, clearCache } = useApolloClient();
+  const [authToken, setAuthToken] = useState("");
   // clearCache();
+
+  useEffect(() => {
+    const readCachedUser = async () => {
+      try {
+        const value = await AsyncStorage.getItem("@USER_AUTH_TOKEN");
+        if (value !== null) {
+          setAuthToken(value);
+        }
+      } catch (e) {
+        console.log("Custom Error(Not found user auth token): ", e);
+      }
+    };
+    readCachedUser();
+  }, []);
+
   if (showSplash || !client) {
     return <AppLoader></AppLoader>;
   } else {
@@ -29,7 +47,9 @@ export default function App() {
           <SafeAreaProvider>
             <NavigationContainer>
               <StatusBar barStyle={statusBarStyle} />
-              <RootStack.Navigator initialRouteName="CreationModal">
+              <RootStack.Navigator
+                initialRouteName={authToken ? "Main" : "CreationModal"}
+              >
                 <RootStack.Group>
                   <RootStack.Screen
                     name="Main"
@@ -37,6 +57,7 @@ export default function App() {
                     options={{ headerShown: false }}
                   />
                 </RootStack.Group>
+
                 <RootStack.Group screenOptions={{ presentation: "card" }}>
                   <RootStack.Screen
                     name="CreationModal"

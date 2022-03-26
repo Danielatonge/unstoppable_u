@@ -91,6 +91,7 @@ export const GET_BOOKMARKED_POSTS_GIVEN_USERID = gql`
           id
           fullName
           userName
+          userImage
           currentPosition
         }
       }

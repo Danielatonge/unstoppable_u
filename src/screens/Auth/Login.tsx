@@ -67,9 +67,6 @@ const auth0ClientId = "EPl6iHuWpBFfq66tGC5R6QHQTRiFlMJ8";
 const auth0Domain = "dev-7so-sx2z.us.auth0.com";
 const authorizationEndpoint = `https://${auth0Domain}/authorize`;
 
-const useProxy = Platform.select({ web: false, default: true });
-const redirectUri = AuthSession.makeRedirectUri({ useProxy });
-
 export const Login = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
@@ -110,77 +107,6 @@ export const Login = () => {
     readCachedUser();
   }, []);
 
-  const [request, result, promptAsync] = AuthSession.useAuthRequest(
-    {
-      redirectUri,
-      clientId: auth0ClientId,
-      responseType: "id_token",
-      scopes: ["openid", "profile"],
-      extraParams: {
-        nonce: "nonce",
-      },
-    },
-    { authorizationEndpoint }
-  );
-
-  useEffect(() => {
-    const authenticateUser = async () => {
-      if (result) {
-        if (result.error) {
-          Alert.alert(
-            "Authentication error",
-            result.params.error_description || "something went wrong"
-          );
-          return;
-        }
-        if (result.type === "success") {
-          // Retrieve the JWT token and decode it
-          const jwtToken = result.params.id_token;
-          const decoded = jwtDecode(jwtToken);
-          const userTempObject = {
-            aud: decoded?.aud,
-            exp: decoded?.exp,
-            family_name: decoded?.family_name,
-            given_name: decoded?.given_name,
-            iat: decoded?.iat,
-            iss: decoded?.iss,
-            locale: decoded?.locale,
-            name: decoded?.name,
-            nickname: decoded?.nickname,
-            nonce: decoded?.nonce,
-            picture: decoded?.picture,
-            sub: decoded?.sub,
-            updated_at: decoded?.updated_at,
-            token: jwtToken,
-          };
-          await AsyncStorage.setItem("@USER_AUTH_TOKEN", jwtToken);
-          // await AsyncStorage.setItem("@USER_AUTH_TOKEN", jwtToken);
-          await getUserGivenId({ variables: { id: decoded?.sub } });
-
-          // if user exist set persisted user data and redirect to Main
-          // if user doesn't exist, create new user record, persist user data and redirect to Main
-
-          if (fetchedUsers && fetchedUsers?.users.length === 0) {
-            const userInCreation = {
-              id: decoded?.sub,
-              fullName: decoded?.name,
-              userName: decoded?.nickname,
-              userImage: decoded?.picture,
-            };
-            createUserMutation({ variables: { input: [userInCreation] } });
-          } else if (fetchedUsers && fetchedUsers?.users.length !== 0) {
-            console.log("User Exist", fetchedUsers?.users[0]);
-            const decoded = fetchedUsers?.users[0];
-          }
-
-          console.log(decoded);
-
-          navigation.navigate("Main");
-        }
-      }
-    };
-    authenticateUser();
-  }, [result]);
   return (
     <Container
       contentContainerStyle={{
@@ -203,18 +129,13 @@ export const Login = () => {
           Sign in or create an account to show the world how awesome you are.{" "}
         </AboutText>
       </View>
-      {result && result.type === "success" && authToken ? (
-        <View style={{ height: 60 }}>
-          <ActivityIndicator />
-        </View>
-      ) : (
-        <SimpleButton
-          style={{ marginVertical: 20, width: "71%" }}
-          title="Sign in or Create an Account"
-          onPress={() => promptAsync({ useProxy })}
-          fill={true}
-        />
-      )}
+
+      <SimpleButton
+        style={{ marginVertical: 20, width: "71%" }}
+        title="Sign in or Create an Account"
+        onPress={() => navigation.navigate("Main")}
+        fill={true}
+      />
     </Container>
   );
 };
