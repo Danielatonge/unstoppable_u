@@ -2,7 +2,7 @@
 
 This project aims at promoting meritocracy in a professional environment
 
-![Unstoppable Universe App demo](https://github.com/Danielatonge/focusNow/blob/main/documentation/focusNow.gif)
+![Unstoppable Universe App demo](https://github.com/Danielatonge/unstoppable_u/blob/main/docs/uu-app.gif)
 
 ## Prerequisites
 
@@ -16,9 +16,13 @@ This project aims at promoting meritocracy in a professional environment
 
 ## Base dependencies
 
-
 - [expo-keep-awake](https://docs.expo.dev/versions/latest/sdk/keep-awake/) for keeping the app awake.
 - [async-storage](https://docs.expo.dev/versions/v44.0.0/sdk/async-storage/) to persist list of finished/unfinished tasks.
+- [styled-components](https://styled-components.com/docs/basics) to style components
+- [apollo3-cache-persist](https://github.com/apollographql/apollo-cache-persist) to persist query results and manage state
+- [graphql](https://graphql.org/) to query our APIs
+- [jwt-decode](https://github.com/auth0/jwt-decode) to decode JWTs token which are Base64Url encoded.
+- [moment](https://momentjscom.readthedocs.io/en/latest/) to assist with date and time
 
 ## Usage
 
@@ -102,6 +106,7 @@ REACT_NATIVE_PACKAGER_HOSTNAME='my-custom-ip-address-or-hostname' npm start
 ```
 
 Windows:
+
 ```
 set REACT_NATIVE_PACKAGER_HOSTNAME='my-custom-ip-address-or-hostname'
 npm start
@@ -116,7 +121,7 @@ This template follows a very simple project structure:
 - `assets`: Asset folder to store all images, vectors, etc.
 - `src`: This folder is the main container of all the code inside your application.
   - `components`: Folder to store any common component that you use through your app (such as a generic button)
-  - `features`: Folder that contains all your application screens/features.
+  - `screens`: Folder that contains all your application screens/features.
     - `Screen`: Each screen should be stored inside its folder and inside it a file for its code and a separate one for the styles and tests.
       - `Screen.js`
       - `Screen.styles.js`
